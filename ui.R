@@ -1,5 +1,6 @@
 library(shiny)
 library(leaflet)
+library(shinyWidgets)
 
 # Choices for drop-downs
 vars <- c(
@@ -316,8 +317,9 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       conditionalPanel(condition = "input.Saisonnalite == 'Saisonier'",
                                                        actionButton("Hiver", "Hiver"),
                                                        actionButton("Printemps", "Printemps"),
+                                                       br(),
                                                        actionButton("Été", "Été"),
-                                                       actionButton("Automne", "Automne")),
+                                                       actionButton("Automne", "Automne"), br(),),
                                       conditionalPanel(condition = "input.Saisonnalite == 'Mensuel'",
                                                        selectInput("Mois", "Séléctionez le mois:",
                                                                    choices=c("Janvier", "Février", "Mars", "Avril","Mai","Juin",
@@ -332,8 +334,17 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       
                                       
                                       ###Percentile
-                                      sliderInput("Percentile", "Séléctionez le percentile:",
-                                                  min=10, max=90, value= 50, step=40),
+                                radioButtons("Percentile", "Séléctionez le percentile:",
+                                             c("10" = "10", "50" = "50", "90" = "90"),inline = TRUE),
+                                      # sliderInput("Percentile", "Séléctionez le percentile:",
+                                      #             min=10, max=90, value= 50, step=40),
+                                
+                                ###Horizon de temps
+                                radioButtons("Horizon", "Séléctionez l'horizon de temps:",
+                                             c("Historique", "2041-2070", "2071-2100"),inline = TRUE),
+                                # sliderTextInput("Horizon", "Séléctionez l'horizon de temps:",
+                                #                 choices = c("Historique", "2041-2070", "2071-2100"),
+                                #                 selected = c("2041-2070")),
                                       
                                       plotOutput("histCentile", height = 200),
                                       plotOutput("scatterCollegeIncome", height = 250)
