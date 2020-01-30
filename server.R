@@ -114,7 +114,7 @@ function(input, output, session) {
           style = list("font-weight" = "normal", padding = "3px 8px"),
           textsize = "15px",
           direction = "auto"))%>%
-      addLegend(pal = pal, values = ~TG$tg_mean, opacity = 0.7, title = NULL,
+      addLegend(pal = pal, values = ~TG$tg_mean, title = "Température (°C)", opacity = 0.7, 
                 position = "bottomright")
   })
   
