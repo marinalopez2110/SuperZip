@@ -8,10 +8,10 @@ library(shiny)
 library(sp)
 
 
-TG  <- geojsonio::geojson_read("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip\\www\\TG.json", what = "sp") # DesktopOuranos
-OneA <- geojsonio::geojson_read("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip\\www\\OneA.json", what = "sp") #DesktopOuranos
-TwoC <- geojsonio::geojson_read("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip\\www\\TwoC.json", what = "sp") #DesktopOuranos
-ThreeD <- geojsonio::geojson_read("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip\\www\\ThreeD.json", what = "sp") #DesktopOuranos <- geojsonio::geojson_read("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip\\www\\TwoC.json", what = "sp") #DesktopOuranos
+TG  <- geojsonio::geojson_read("www\\TG.json", what = "sp") # DesktopOuranos
+OneA <- geojsonio::geojson_read("www\\OneA.json", what = "sp") #DesktopOuranos
+TwoC <- geojsonio::geojson_read("www\\TwoC.json", what = "sp") #DesktopOuranos
+ThreeD <- geojsonio::geojson_read("www\\ThreeD.json", what = "sp") #Desktop
 
 bins <- c(14, 12, 10, 8, 6, 4, 2, 0, -2, -4, -5)
 
