@@ -15,13 +15,7 @@ OneA <- geojsonio::geojson_read("www/OneA.json", what = "sp") #Deployment
 TwoC <- geojsonio::geojson_read("www/TwoC.json", what = "sp") #Deployment
 ThreeD <- geojsonio::geojson_read("www/ThreeD.json", what = "sp") #Deployment
 
-# TG  <- geojsonio::geojson_read("www/TG.json", what = "sp") # Deployment
-# OneA <- geojsonio::geojson_read("www/OneA.json", what = "sp") #Deployment
-# TwoC <- geojsonio::geojson_read("www/TwoC.json", what = "sp") #Deployment
-# ThreeD <- geojsonio::geojson_read("www/ThreeD.json", what = "sp") #Deployment
-
 bins <- c(14, 12, 10, 8, 6, 4, 2, 0, -2, -4, -5)
-
 
 pal <- colorBin("Spectral", domain = TG$tg_mean, bins = bins)
 pal1a <- colorBin("Spectral", domain = OneA$tg_mean, bins = bins)
@@ -29,25 +23,11 @@ pal2c <- colorBin("Spectral", domain = TwoC$tg_mean, bins = bins)
 pal3d <- colorBin("Spectral", domain = ThreeD$tg_mean, bins = bins)
 
 # labels <- sprintf("<strong>%s</strong><br/>%g °C", TG$TER_GUIDE, TG$tg_mean) %>% lapply(htmltools::HTML)
-# labels1 <- sprintf("<strong>%s</strong><br/>%g °C", OneA$TER_GUIDE, OneA$tg_mean) %>% lapply(htmltools::HTML)
-# labels2 <- sprintf("<strong>%s</strong><br/>%g °C", TwoC$TER_GUIDE, TwoC$tg_mean) %>% lapply(htmltools::HTML)
-# labels3 <- sprintf("<strong>%s</strong><br/>%g °C", ThreeD$TER_GUIDE, ThreeD$tg_mean) %>% lapply(htmltools::HTML)
-
 #labels <- as.character(tagList(tags$strong(HTML(sprintf("Region: %s", TG$TER_GUIDE))), tags$br(), sprintf("Temp: %s", TG$tg_mean)))
 labels  <- sprintf("Région: %s - Temp: %s", TG$TER_GUIDE, TG$tg_mean)
 labels1 <- sprintf("Région: %s - Temp: %s", OneA$TER_GUIDE, OneA$tg_mean) 
 labels2 <- sprintf("Région: %s - Temp: %s", TwoC$TER_GUIDE, TwoC$tg_mean) 
 labels3 <- sprintf("Région: %s - Temp: %s", ThreeD$TER_GUIDE, ThreeD$tg_mean)
-
-# content <- as.character(tagList(
-#   tags$h4("Score:", as.integer(selectedZip$centile)),
-#   tags$strong(HTML(sprintf("%s, %s %s",
-#                            selectedZip$city.x, selectedZip$state.x, selectedZip$zipcode
-#   ))), tags$br(),
-#   sprintf("Median household income: %s", dollar(selectedZip$income * 1000)), tags$br(),
-#   sprintf("Percent of adults with BA: %s%%", as.integer(selectedZip$college)), tags$br(),
-#   sprintf("Adult population: %s", selectedZip$adultpop)
-# ))
 
 
 function(input, output, session) {
@@ -119,6 +99,36 @@ function(input, output, session) {
   })
   
   
+  # This observer is responsible for plotting temperature shapes,
+  # according to the variables the user has chosen to map to color and size.
+  observe({
+    colorBy <- input$color
+    sizeBy <- input$size
+    
+    if (colorBy == "superzip") {
+      # Color and palette are treated specially in the "superzip" case, because
+      # the values are categorical instead of continuous.
+      colorData <- ifelse(zipdata$centile >= (100 - input$threshold), "yes", "no")
+      pal <- colorFactor("viridis", colorData)
+    } else {
+      colorData <- zipdata[[colorBy]]
+      pal <- colorBin("viridis", colorData, 7, pretty = FALSE)
+    }
+    
+    if (sizeBy == "superzip") {
+      # Radius is treated specially in the "superzip" case.
+      radius <- ifelse(zipdata$centile >= (100 - input$threshold), 30000, 3000)
+    } else {
+      radius <- zipdata[[sizeBy]] / max(zipdata[[sizeBy]]) * 30000
+    }
+    
+    leafletProxy("map", data = zipdata) %>%
+      clearShapes() %>%
+      addCircles(~longitude, ~latitude, radius=radius, layerId=~zipcode,
+                 stroke=FALSE, fillOpacity=0.4, fillColor=pal(colorData)) %>%
+      addLegend("bottomleft", pal=pal, values=colorData, title=colorBy,
+                layerId="colorLegend")
+  })
   
 
 }
