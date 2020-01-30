@@ -6,12 +6,19 @@ library(dplyr)
 library(geojsonio)
 library(shiny)
 library(sp)
+library(htmltools)
+library(purrr)
 
 
-TG  <- geojsonio::geojson_read("www\\TG.json", what = "sp") # DesktopOuranos
-OneA <- geojsonio::geojson_read("www\\OneA.json", what = "sp") #DesktopOuranos
-TwoC <- geojsonio::geojson_read("www\\TwoC.json", what = "sp") #DesktopOuranos
-ThreeD <- geojsonio::geojson_read("www\\ThreeD.json", what = "sp") #Desktop
+TG  <- geojsonio::geojson_read("www/TG.json", what = "sp") # Deployment
+OneA <- geojsonio::geojson_read("www/OneA.json", what = "sp") #Deployment
+TwoC <- geojsonio::geojson_read("www/TwoC.json", what = "sp") #Deployment
+ThreeD <- geojsonio::geojson_read("www/ThreeD.json", what = "sp") #Deployment
+
+# TG  <- geojsonio::geojson_read("www/TG.json", what = "sp") # Deployment
+# OneA <- geojsonio::geojson_read("www/OneA.json", what = "sp") #Deployment
+# TwoC <- geojsonio::geojson_read("www/TwoC.json", what = "sp") #Deployment
+# ThreeD <- geojsonio::geojson_read("www/ThreeD.json", what = "sp") #Deployment
 
 bins <- c(14, 12, 10, 8, 6, 4, 2, 0, -2, -4, -5)
 
@@ -26,10 +33,21 @@ pal3d <- colorBin("Spectral", domain = ThreeD$tg_mean, bins = bins)
 # labels2 <- sprintf("<strong>%s</strong><br/>%g °C", TwoC$TER_GUIDE, TwoC$tg_mean) %>% lapply(htmltools::HTML)
 # labels3 <- sprintf("<strong>%s</strong><br/>%g °C", ThreeD$TER_GUIDE, ThreeD$tg_mean) %>% lapply(htmltools::HTML)
 
-labels <- sprintf( TG$TER_GUIDE, TG$tg_mean) 
-labels1 <- sprintf(OneA$TER_GUIDE, OneA$tg_mean) 
-labels2 <- sprintf(TwoC$TER_GUIDE, TwoC$tg_mean) 
-labels3 <- sprintf(ThreeD$TER_GUIDE, ThreeD$tg_mean)
+#labels <- as.character(tagList(tags$strong(HTML(sprintf("Region: %s", TG$TER_GUIDE))), tags$br(), sprintf("Temp: %s", TG$tg_mean)))
+labels  <- sprintf("Région: %s - Temp: %s", TG$TER_GUIDE, TG$tg_mean)
+labels1 <- sprintf("Région: %s - Temp: %s", OneA$TER_GUIDE, OneA$tg_mean) 
+labels2 <- sprintf("Région: %s - Temp: %s", TwoC$TER_GUIDE, TwoC$tg_mean) 
+labels3 <- sprintf("Région: %s - Temp: %s", ThreeD$TER_GUIDE, ThreeD$tg_mean)
+
+# content <- as.character(tagList(
+#   tags$h4("Score:", as.integer(selectedZip$centile)),
+#   tags$strong(HTML(sprintf("%s, %s %s",
+#                            selectedZip$city.x, selectedZip$state.x, selectedZip$zipcode
+#   ))), tags$br(),
+#   sprintf("Median household income: %s", dollar(selectedZip$income * 1000)), tags$br(),
+#   sprintf("Percent of adults with BA: %s%%", as.integer(selectedZip$college)), tags$br(),
+#   sprintf("Adult population: %s", selectedZip$adultpop)
+# ))
 
 
 function(input, output, session) {
@@ -56,7 +74,8 @@ function(input, output, session) {
         labelOptions = labelOptions(
           style = list("font-weight" = "normal", padding = "3px 8px"),
           textsize = "15px",
-          direction = "auto"))%>%
+          direction = "auto")
+        )%>%
       addPolygons (
         fillColor = pal2c(TwoC$tg_mean),
         data =  TwoC,
