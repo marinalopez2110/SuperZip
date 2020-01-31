@@ -41,93 +41,204 @@ function(input, output, session) {
         urlTemplate = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
         attribution = 'Maps by <a href="http://www.mapbox.com/">Mapbox</a>'
       ) %>%
-      setView(lat = 45.6, lng= -70.5, zoom = 7)%>%
-      addPolygons (
-        fillColor = pal1a(OneA$tg_mean),
-        data = OneA,
-        weight = 1,
-        opacity = 1,
-        color = "black",
-        dashArray = "3",
-        fillOpacity = 0.8,
-        label = labels1,
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto")
-        )%>%
-      addPolygons (
-        fillColor = pal2c(TwoC$tg_mean),
-        data =  TwoC,
-        weight = 1,
-        opacity = 1,
-        color = "white",
-        dashArray = "3",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 2,
-          color = "#666",
-          dashArray = "",
-          fillOpacity = 0.8,
-          bringToFront = TRUE),
-        label = labels2,
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto"))%>%
-      addPolygons (
-        fillColor = pal3d(ThreeD$tg_mean),
-        data =  ThreeD,
-        weight = 1,
-        opacity = 1,
-        color = "red",
-        dashArray = "3",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 2,
-          color = "#666",
-          dashArray = "",
-          fillOpacity = 0.8,
-          bringToFront = TRUE),
-        label = labels3,
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto"))%>%
-      addLegend(pal = pal, values = ~TG$tg_mean, title = "Température (°C)", opacity = 0.7, 
-                position = "bottomright")
+      setView(lat = 45.6, lng= -70.5, zoom = 7)
+    # %>%
+    #   addPolygons (
+    #     fillColor = pal1a(OneA$tg_mean),
+    #     data = OneA,
+    #     weight = 1,
+    #     opacity = 1,
+    #     color = "black",
+    #     dashArray = "3",
+    #     fillOpacity = 0.8,
+    #     label = labels1,
+    #     labelOptions = labelOptions(
+    #       style = list("font-weight" = "normal", padding = "3px 8px"),
+    #       textsize = "15px",
+    #       direction = "auto")
+    #     )%>%
+    #   addPolygons (
+    #     fillColor = pal2c(TwoC$tg_mean),
+    #     data =  TwoC,
+    #     weight = 1,
+    #     opacity = 1,
+    #     color = "white",
+    #     dashArray = "3",
+    #     fillOpacity = 0.7,
+    #     highlight = highlightOptions(
+    #       weight = 2,
+    #       color = "#666",
+    #       dashArray = "",
+    #       fillOpacity = 0.8,
+    #       bringToFront = TRUE),
+    #     label = labels2,
+    #     labelOptions = labelOptions(
+    #       style = list("font-weight" = "normal", padding = "3px 8px"),
+    #       textsize = "15px",
+    #       direction = "auto"))%>%
+    #   addPolygons (
+    #     fillColor = pal3d(ThreeD$tg_mean),
+    #     data =  ThreeD,
+    #     weight = 1,
+    #     opacity = 1,
+    #     color = "red",
+    #     dashArray = "3",
+    #     fillOpacity = 0.7,
+    #     highlight = highlightOptions(
+    #       weight = 2,
+    #       color = "#666",
+    #       dashArray = "",
+    #       fillOpacity = 0.8,
+    #       bringToFront = TRUE),
+    #     label = labels3,
+    #     labelOptions = labelOptions(
+    #       style = list("font-weight" = "normal", padding = "3px 8px"),
+    #       textsize = "15px",
+    #       direction = "auto"))%>%
+    #   addLegend(pal = pal, values = ~TG$tg_mean, title = "Température (°C)", opacity = 0.7, 
+    #             position = "bottomright")
   })
   
   
   # This observer is responsible for plotting temperature shapes,
   # according to the variables the user has chosen to map to color and size.
   observe({
-    colorBy <- input$color
-    sizeBy <- input$size
+    TG <- input$Territoires
     
-    if (colorBy == "superzip") {
+    if (TG == '1a') {
       # Color and palette are treated specially in the "superzip" case, because
       # the values are categorical instead of continuous.
-      colorData <- ifelse(zipdata$centile >= (100 - input$threshold), "yes", "no")
-      pal <- colorFactor("viridis", colorData)
-    } else {
-      colorData <- zipdata[[colorBy]]
-      pal <- colorBin("viridis", colorData, 7, pretty = FALSE)
-    }
+      leafletProxy("map", data = OneA) %>%
+        #clearShapes() %>%
+      addPolygons (
+            fillColor = pal1a(OneA$tg_mean),
+            data = OneA,
+            weight = 1,
+            opacity = 1,
+            color = "black",
+            dashArray = "3",
+            fillOpacity = 0.8,
+            label = labels1,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "15px",
+              direction = "auto"))
+    } else if (TG == '2c') {
+    leafletProxy("map", data = TwoC) %>%
+     # clearShapes() %>%
+    addPolygons (
+          fillColor = pal2c(TwoC$tg_mean),
+          data =  TwoC,
+          weight = 1,
+          opacity = 1,
+          color = "white",
+          dashArray = "3",
+          fillOpacity = 0.7,
+          highlight = highlightOptions(
+            weight = 2,
+            color = "#666",
+            dashArray = "",
+            fillOpacity = 0.8,
+            bringToFront = TRUE),
+          label = labels2,
+          labelOptions = labelOptions(
+            style = list("font-weight" = "normal", padding = "3px 8px"),
+            textsize = "15px",
+            direction = "auto"))
+  }
+  })
+  
+  observe({
+    TG2 <- input$Territoires2
     
-    if (sizeBy == "superzip") {
-      # Radius is treated specially in the "superzip" case.
-      radius <- ifelse(zipdata$centile >= (100 - input$threshold), 30000, 3000)
-    } else {
-      radius <- zipdata[[sizeBy]] / max(zipdata[[sizeBy]]) * 30000
+    if (TG2 == '1a') {
+      # Color and palette are treated specially in the "superzip" case, because
+      # the values are categorical instead of continuous.
+      leafletProxy("map", data = OneA) %>%
+        #clearShapes() %>%
+        addPolygons (
+          fillColor = pal1a(OneA$tg_mean),
+          data = OneA,
+          weight = 1,
+          opacity = 1,
+          color = "black",
+          dashArray = "3",
+          fillOpacity = 0.8,
+          label = labels1,
+          labelOptions = labelOptions(
+            style = list("font-weight" = "normal", padding = "3px 8px"),
+            textsize = "15px",
+            direction = "auto"))
+    } else if (TG2 == '2c') {
+      leafletProxy("map", data = TwoC) %>%
+        #clearShapes() %>%
+        addPolygons (
+          fillColor = pal2c(TwoC$tg_mean),
+          data =  TwoC,
+          weight = 1,
+          opacity = 1,
+          color = "white",
+          dashArray = "3",
+          fillOpacity = 0.7,
+          highlight = highlightOptions(
+            weight = 2,
+            color = "#666",
+            dashArray = "",
+            fillOpacity = 0.8,
+            bringToFront = TRUE),
+          label = labels2,
+          labelOptions = labelOptions(
+            style = list("font-weight" = "normal", padding = "3px 8px"),
+            textsize = "15px",
+            direction = "auto"))
     }
+  })
+  
+  
+  observe({
+    TG3 <- input$Territoires3
     
-    leafletProxy("map", data = zipdata) %>%
-      clearShapes() %>%
-      addCircles(~longitude, ~latitude, radius=radius, layerId=~zipcode,
-                 stroke=FALSE, fillOpacity=0.4, fillColor=pal(colorData)) %>%
-      addLegend("bottomleft", pal=pal, values=colorData, title=colorBy,
-                layerId="colorLegend")
+    if (TG3 == '1a') {
+      # Color and palette are treated specially in the "superzip" case, because
+      # the values are categorical instead of continuous.
+      leafletProxy("map", data = OneA) %>%
+        #clearShapes() %>%
+        addPolygons (
+          fillColor = pal1a(OneA$tg_mean),
+          data = OneA,
+          weight = 1,
+          opacity = 1,
+          color = "black",
+          dashArray = "3",
+          fillOpacity = 0.8,
+          label = labels1,
+          labelOptions = labelOptions(
+            style = list("font-weight" = "normal", padding = "3px 8px"),
+            textsize = "15px",
+            direction = "auto"))
+    } else if (TG3 == '2c') {
+      leafletProxy("map", data = TwoC) %>%
+        #clearShapes() %>%
+        addPolygons (
+          fillColor = pal2c(TwoC$tg_mean),
+          data =  TwoC,
+          weight = 1,
+          opacity = 1,
+          color = "white",
+          dashArray = "3",
+          fillOpacity = 0.7,
+          highlight = highlightOptions(
+            weight = 2,
+            color = "#666",
+            dashArray = "",
+            fillOpacity = 0.8,
+            bringToFront = TRUE),
+          label = labels2,
+          labelOptions = labelOptions(
+            style = list("font-weight" = "normal", padding = "3px 8px"),
+            textsize = "15px",
+            direction = "auto"))
+    }
   })
   
 
