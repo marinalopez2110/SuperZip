@@ -24,6 +24,29 @@ palette <- function(inputST){
   return (pal)
 }
 
+addmapr <- function(dataTG, pal, labels, colort){
+
+return (leafletProxy("map", data = dataTG) %>%
+ # clearShapes() %>%
+  addPolygons (
+    fillColor = pal(dataTG$tg_mean),
+    data = dataTG, #OneA,
+    weight = 1,
+    opacity = 1,
+    color = colort,
+    dashArray = "3",
+    fillOpacity = 0.8,
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")
+  ))
+ #  %>%
+ # addLegend(pal = palette, values = ~dataTG$tg_mean, title = "Température (°C)", opacity = 0.7,
+ #            position = "bottomright")
+}  
+
 function(input, output, session) {
   
   ## Interactive Map ###########################################
@@ -41,29 +64,30 @@ function(input, output, session) {
   # according to the variables the user has chosen to map to color and size.
   observe({
     TG <- input$Territoires
-    dataTG =  load_json(TG)
+    dataTG <- load_json(TG)
     pal <- palette(dataTG)
     labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
-    leafletProxy("map", data = dataTG) %>%
-        clearShapes() %>%
-      addPolygons (
-            fillColor = pal(dataTG$tg_mean),
-            data = dataTG, #OneA,
-            weight = 1,
-            opacity = 1,
-            color = "black",
-            dashArray = "3",
-            fillOpacity = 0.8,
-             label = labels,
-             labelOptions = labelOptions(
-               style = list("font-weight" = "normal", padding = "3px 8px"),
-               textsize = "15px",
-               direction = "auto")
-            ) %>%
-     addLegend(pal = palette, values = ~TG1$tg_mean, title = "Température (°C)", opacity = 0.7,
-               position = "bottomright")
-
+    colort <- "black"
+    addmapr(dataTG, pal, labels, colort)
+    
   })
  
+  observe({
+    TG <- input$Territoires2
+    dataTG <- load_json(TG)
+    pal <- palette(dataTG)
+    labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
+    colort <- "white"
+    addmapr(dataTG, pal, labels, colort)
+  })
+  
+  observe({
+    TG <- input$Territoires3
+    dataTG <- load_json(TG)
+    pal <- palette(dataTG)
+    labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
+    colort <- "red"
+    addmapr(dataTG, pal, labels, colort)
+  })
 
 }
