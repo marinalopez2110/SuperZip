@@ -1,6 +1,7 @@
 library(shiny)
 library(leaflet)
 library(shinyWidgets)
+library(shinyalert)
 
 # Choices for drop-downs
 # vars <- c(
@@ -32,6 +33,12 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       width = 330, height = "auto",
                                       
                                       h2("Portraits Climatiques"),
+                                      
+                                      (div(icon("exclamation-circle"), strong("IMPORTANT!!!", style = "color:red"))),
+                                      p("Seulement l'option 'Territories guides' fonctionne. Vous pouvez choisir jusqu'à 3 sous-régions."),
+                                      p("Et", span("SEULEMENT", style = "color:red"), "les options", span("'1a', '2c' et '3d", style = "color:red"), "."),
+                                      
+                                      # actionButton("btn", "INSTRUCTIONS!!"),
                                       
                                 ###Échele spatiale
                                       selectInput("Echele", "Séléctionez l'échele spatiale:",
