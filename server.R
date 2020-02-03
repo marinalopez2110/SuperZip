@@ -8,7 +8,9 @@ library(shiny)
 library(sp)
 library(htmltools)
 library(purrr)
+library(shinyalert)
 
+# setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region){
   fname <- paste("www/",region,".json",sep="")
   print(fname)
@@ -18,16 +20,20 @@ load_json <- function (region){
 TG1  <- geojsonio::geojson_read("www/TG.json", what = "sp")
 
 bins <- c('-5', '-4', '-2', '0', '2', '4', '6', '8', '10', '12', '14' )
+binsn = as.numeric(bins)
 
 palette <- function(inputST){
-  pal <- colorBin("Spectral", domain = inputST$tg_mean, bins = bins)
+  #pal <- colorBin("Spectral", domain = inputST$tg_mean, bins = bins)
+  pal <- colorNumeric("Spectral", domain = TG1$tg_mean)
   return (pal)
 }
 
 addmapr <- function(dataTG, pal, labels, colort){
 
-return (leafletProxy("map", data = dataTG) %>%
+  return(leafletProxy("map", data = dataTG) %>%
  # clearShapes() %>%
+   clearControls() %>%
+   #leaflet("map")%>%
   addPolygons (
     fillColor = pal(dataTG$tg_mean),
     data = dataTG, #OneA,
@@ -40,12 +46,13 @@ return (leafletProxy("map", data = dataTG) %>%
     labelOptions = labelOptions(
       style = list("font-weight" = "normal", padding = "3px 8px"),
       textsize = "15px",
-      direction = "auto")
-  ))
- #  %>%
- # addLegend(pal = palette, values = ~dataTG$tg_mean, title = "Température (°C)", opacity = 0.7,
- #            position = "bottomright")
-}  
+      direction = "auto"))%>%
+      #leaflet("map")%>%
+      addLegend(pal = pal, values = TG1$tg_mean ,  title = "Température (°C)", opacity = 0.7,
+                position = "topleft") #values = dataTG$tg_mean
+  
+ )
+ }  
 
 function(input, output, session) {
   
@@ -60,6 +67,11 @@ function(input, output, session) {
       setView(lat = 45.6, lng= -70.5, zoom = 7)
   })
   
+  # observeEvent(input$btn, {
+  #   # Show a simple modal
+  #   shinyalert("Seulement l'option 'Territorie Guide' fonctionne. Vous pouvez choisir jusqu'à 3 sous-régions. Et SULEMENT les options '1a', '2c' et '3d.", type = "success")
+  # })
+  
   # This observer is responsible for plotting temperature shapes,
   # according to the variables the user has chosen to map to color and size.
   observe({
@@ -69,7 +81,6 @@ function(input, output, session) {
     labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
     colort <- "black"
     addmapr(dataTG, pal, labels, colort)
-    
   })
  
   observe({
