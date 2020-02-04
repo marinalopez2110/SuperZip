@@ -1,17 +1,6 @@
 library(shiny)
 library(leaflet)
 library(shinyWidgets)
-library(shinyalert)
-
-# Choices for drop-downs
-# vars <- c(
-#   "Séléctionez l'échele spatiale:" = "echele",
-#   "Nombre de sous-régions que vous souhaitez voir:" = "Sousregions",
-#   "Séléctionez le domaine :" = "Domaines",
-#   "Séléctionez le sous-domaine:" = "Sous-domaines",
-#   "Séléctionez la région:" = "RegEcol"
-# )
-
 
 navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
            
@@ -37,8 +26,6 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       (div(icon("exclamation-circle"), strong("IMPORTANT!!!", style = "color:red"))),
                                       p("Seulement l'option 'Territories guides' fonctionne. Vous pouvez choisir jusqu'à 3 sous-régions."),
                                       p("Et", span("SEULEMENT", style = "color:red"), "les options", span("'1a', '2c' et '3d", style = "color:red"), "."),
-                                      
-                                      # actionButton("btn", "INSTRUCTIONS!!"),
                                       
                                 ###Échele spatiale
                                       selectInput("Echele", "Séléctionez l'échele spatiale:",
