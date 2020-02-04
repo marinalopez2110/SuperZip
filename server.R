@@ -8,7 +8,7 @@ library(shiny)
 library(sp)
 library(htmltools)
 library(purrr)
-library(shinyalert)
+
 
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region){
@@ -67,13 +67,7 @@ function(input, output, session) {
       setView(lat = 45.6, lng= -70.5, zoom = 7)
   })
   
-  # observeEvent(input$btn, {
-  #   # Show a simple modal
-  #   shinyalert("Seulement l'option 'Territorie Guide' fonctionne. Vous pouvez choisir jusqu'à 3 sous-régions. Et SULEMENT les options '1a', '2c' et '3d.", type = "success")
-  # })
-  
-  # This observer is responsible for plotting temperature shapes,
-  # according to the variables the user has chosen to map to color and size.
+
   observe({
     TG <- input$Territoires
     dataTG <- load_json(TG)
