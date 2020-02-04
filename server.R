@@ -19,11 +19,7 @@ load_json <- function (region){
 
 TG1  <- geojsonio::geojson_read("www/TG.json", what = "sp")
 
-bins <- c('-5', '-4', '-2', '0', '2', '4', '6', '8', '10', '12', '14' )
-binsn = as.numeric(bins)
-
 palette <- function(inputST){
-  #pal <- colorBin("Spectral", domain = inputST$tg_mean, bins = bins)
   pal <- colorNumeric("Spectral", domain = TG1$tg_mean)
   return (pal)
 }
