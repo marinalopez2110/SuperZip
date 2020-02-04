@@ -48,7 +48,14 @@ addmapr <- function(dataTG, pal, labels, colort){
                 position = "topleft") #values = dataTG$tg_mean
   
  )
- }  
+} 
+
+mapTG <- function(TG, colort){ 
+  dataTG <- load_json(TG)
+  pal <- palette(dataTG)
+  labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
+  addmapr(dataTG, pal, labels, colort)
+}
 
 function(input, output, session) {
   
@@ -66,29 +73,20 @@ function(input, output, session) {
 
   observe({
     TG <- input$Territoires
-    dataTG <- load_json(TG)
-    pal <- palette(dataTG)
-    labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
     colort <- "black"
-    addmapr(dataTG, pal, labels, colort)
+    mapTG(TG, colort)
   })
  
   observe({
     TG <- input$Territoires2
-    dataTG <- load_json(TG)
-    pal <- palette(dataTG)
-    labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
     colort <- "white"
-    addmapr(dataTG, pal, labels, colort)
+    mapTG(TG, colort)
   })
   
   observe({
     TG <- input$Territoires3
-    dataTG <- load_json(TG)
-    pal <- palette(dataTG)
-    labels <- sprintf("Région: %s - Temp: %s", dataTG$TER_GUIDE, dataTG$tg_mean)
     colort <- "red"
-    addmapr(dataTG, pal, labels, colort)
+    mapTG(TG, colort)
   })
 
 }
