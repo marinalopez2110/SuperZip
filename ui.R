@@ -447,29 +447,23 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                                                    choices=c("Janvier", "Février", "Mars", "Avril","Mai","Juin",
                                                                              "Julliet","Aout","Septembre","Octobre","Novembre","Decembre"))
                                       ),
-                                      
-                                      ###Scenario
-                                      
-                                      radioButtons("Scenario", "Séléctionez le scenario d'émissions:",
-                                                   c("Modérées (RCP4.5)" = "Moderees",
-                                                     "Élevées (RCP8.5)" = "Elevees")),
-                                      
-                                      
-                                      ###Percentile
-                                radioButtons("Percentile", "Séléctionez le percentile:",
-                                             c("10" = "10", "50" = "50", "90" = "90"),inline = TRUE),
-                                      # sliderInput("Percentile", "Séléctionez le percentile:",
-                                      #             min=10, max=90, value= 50, step=40),
                                 
                                 ###Horizon de temps
                                 radioButtons("Horizon", "Séléctionez l'horizon de temps:",
-                                             c("Historique", "2041-2070", "2071-2100"),inline = TRUE),
-                                # sliderTextInput("Horizon", "Séléctionez l'horizon de temps:",
-                                #                 choices = c("Historique", "2041-2070", "2071-2100"),
-                                #                 selected = c("2041-2070")),
+                                             c("Historique", "2041-2070", "2071-2100"),inline = TRUE),      
+                                
+                                      ###Scenario
+                                conditionalPanel(condition = "input.Horizon == '2041-2070' || input.Horizon == '2071-2100'",      
+                                      radioButtons("Scenario", "Séléctionez le scenario d'émissions:",
+                                                   c("Modérées (RCP4.5)" = "Moderees",
+                                                     "Élevées (RCP8.5)" = "Elevees"))),
                                       
-                                      plotOutput("histCentile", height = 200),
-                                      plotOutput("scatterCollegeIncome", height = 250)
+                                      
+                                      ###Percentile
+                                conditionalPanel(condition = "input.Horizon == '2041-2070' || input.Horizon == '2071-2100'",
+                                radioButtons("Percentile", "Séléctionez le percentile:",
+                                             c("10" = "10", "50" = "50", "90" = "90"),inline = TRUE))
+                               
                         ),
                         
                         tags$div(id="cite",
