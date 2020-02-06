@@ -12,7 +12,7 @@ library(purrr)
 
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region){
-  fname <- paste("www/",region,".json",sep="")
+  fname <- paste("www/",region,"_rcp45_tg_annual.json",sep="")
   print(fname)
   geojsonio::geojson_read(fname, what = "sp")
 }
@@ -83,6 +83,11 @@ function(input, output, session) {
     TG <- input$Territoires3
     colort <- "red"
     mapTG(TG, colort)
+  })
+  
+  observeEvent(  input$Nettoyer, {
+    leafletProxy("map") %>%
+    clearShapes()
   })
   
   
