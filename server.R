@@ -17,7 +17,7 @@ load_json <- function (region){
   geojsonio::geojson_read(fname, what = "sp")
 }
 
-TG1  <- geojsonio::geojson_read("www/TG.json", what = "sp")
+TG1  <- geojsonio::geojson_read("www/TGobstg.json", what = "sp")
 
 palette <- function(inputST){
   pal <- colorNumeric("Spectral", domain = TG1$tg_mean)
@@ -25,7 +25,6 @@ palette <- function(inputST){
 }
 
 addmapr <- function(dataTG, pal, labels, colort){
-
   return(leafletProxy("map", data = dataTG) %>%
  # clearShapes() %>%
    clearControls() %>%
@@ -45,10 +44,8 @@ addmapr <- function(dataTG, pal, labels, colort){
       direction = "auto"))%>%
       #leaflet("map")%>%
       addLegend(pal = pal, values = TG1$tg_mean ,  title = "Température (°C)", opacity = 0.7,
-                position = "topleft") #values = dataTG$tg_mean
-  
- )
-} 
+                position = "topleft") )
+}
 
 mapTG <- function(TG, colort){ 
   dataTG <- load_json(TG)
@@ -70,7 +67,6 @@ function(input, output, session) {
       setView(lat = 45.6, lng= -70.5, zoom = 7)
   })
   
-
   observe({
     TG <- input$Territoires
     colort <- "black"
@@ -88,5 +84,12 @@ function(input, output, session) {
     colort <- "red"
     mapTG(TG, colort)
   })
+  
+  
+  observe({ if (input$Echele == "Territoires guides" && input$Sousregions == "Toutes") {
+    colort <- "black"
+    pal <- palette(TG1)
+    labels <- sprintf("Région: %s - Temp: %s", TG1$TER_GUIDE, TG1$tg_mean)
+    addmapr(TG1, pal, labels, colort)} })
 
 }
