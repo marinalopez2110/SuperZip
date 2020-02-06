@@ -23,9 +23,18 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       
                                       h2("Portraits Climatiques"),
                                       
-                                      (div(icon("exclamation-circle"), strong("IMPORTANT!!!", style = "color:red"))),
-                                      p("Seulement l'option 'Territories guides' fonctionne. Vous pouvez choisir jusqu'à 3 sous-régions."),
-                                      p("Et", span("SEULEMENT", style = "color:red"), "les options", span("'1a', '2c' et '3d", style = "color:red"), "."),
+                                      # (div(icon("exclamation-circle"), strong("IMPORTANT!!!", style = "color:red"))),
+                                      # p("Seulement l'option 'Territories guides' fonctionne. Vous pouvez choisir jusqu'à 3 sous-régions."),
+                                      # p("Et", span("SEULEMENT", style = "color:red"), "les options", span("'1a', '2c' et '3d", style = "color:red"), "."),
+                                      
+                                      # actionBttn(
+                                      #   icon = "map",
+                                      #   inputId = "Nettoyer",
+                                      #   label = "Nettoyer la carte",
+                                      #   color = "primary",
+                                      #   style = "bordered"
+                                      # ),
+                                      actionButton("Nettoyer", "Nettoyer la carte"),
                                       
                                 ###Échele spatiale
                                       selectInput("Echele", "Séléctionez l'échele spatiale:",
@@ -424,7 +433,7 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                                   choices=c("Températures moyennes, min et max","Précipitations totales et sous forme de neige",
                                                             "Degrés-jours de croissance", "Évènements gel-dégel", "Saison de croissance")),
                                       conditionalPanel(condition = "input.Variable == 'Températures moyennes, min et max'",
-                                                       actionButton("Moyenne", "Températures moyennes (Â°C)"),
+                                                       actionButton("Moyenne", "Températures moyennes (°C)"),
                                                        actionButton("Maximum", HTML("Moyenne des températures maximales <br> quotidiennes (°C)")),
                                                        actionButton("Minimum",HTML("Moyenne des températures minimales <br> quotidiennes (°C)"))),
                                       conditionalPanel(condition = "input.Variable == 'Précipitations totales et sous forme de neige'",
