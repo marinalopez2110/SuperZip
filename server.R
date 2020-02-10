@@ -25,7 +25,13 @@ addmapr <- function(dataTG, colort, TG1, vari){ #pal
     fillColor <- pal(dataTG$tg_mean)
     values <- TG1$tg_mean
     title <- "Température (°C)"
-  }
+  } else if(vari == "prcptot"){
+    pal <- colorNumeric("Spectral", domain = TG1$prcptot)
+    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
+    fillColor <- pal(dataTG$prcptot)
+    values <- TG1$prcptot
+    title <- "Précipitation totale (mm)"
+  } 
   
   return(leafletProxy("map", data = dataTG) %>%
  # clearShapes() %>%
@@ -72,28 +78,34 @@ function(input, output, session) {
       setView(lat = 45.6, lng= -70.5, zoom = 7)
   })
   
-  observeEvent(  input$PrecTotale, {
-    vari <- "prcptot"
-   })
-  
+
   observe({
     TG <- input$Territoires
     colort <- "black"
     vari <- "tg_mean"
+    if (input$PrecTotale) {
+      vari <- "prcptot"
+      print (vari)}
     mapTG(TG, colort, vari)
   })
  
   observe({
     TG <- input$Territoires2
-    colort <- "white"
+    colort <- "black"
     vari <- "tg_mean"
+    if (input$PrecTotale) {
+      vari <- "prcptot"
+      print (vari)}
     mapTG(TG, colort, vari)
   })
   
   observe({
     TG <- input$Territoires3
-    colort <- "red"
+    colort <- "black"
     vari <- "tg_mean"
+    if (input$PrecTotale) {
+      vari <- "prcptot"
+      print (vari)}
     mapTG(TG, colort, vari)
   })
   
@@ -107,6 +119,9 @@ function(input, output, session) {
     TG <- "TG"
     colort <- "black"
     vari <- "tg_mean"
+    if (input$PrecTotale) {
+      vari <- "prcptot"
+      print (vari)}
     dataTG <- load_json(TG, vari)
     addmapr(dataTG, colort, dataTG, vari)} })
 
