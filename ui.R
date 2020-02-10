@@ -471,7 +471,7 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       ###Percentile
                                 conditionalPanel(condition = "input.Horizon == '2041-2070' || input.Horizon == '2071-2100'",
                                 radioButtons("Percentile", "Séléctionez le percentile:",
-                                             c("10" = "10", "50" = "50", "90" = "90"),inline = TRUE))
+                                             c("10" = "10", "50" = "50", "90" = "90"), selected = "50", inline = TRUE))
                                
                         ),
                         
