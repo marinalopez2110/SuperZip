@@ -96,6 +96,9 @@ function(input, output, session) {
     if (input$Horizon == '2071-2100') {
       period <- "2080"
       print (period)}
+    if (input$Scenario == 'rcp85') {
+      scenario <- "rcp85"
+      print (scenario)}
     mapTG(region, vari, period, saisson, scenario, percentile)
   })
  
@@ -116,6 +119,9 @@ function(input, output, session) {
     if (input$Horizon == '2071-2100') {
       period <- "2080"
       print (period)}
+    if (input$Scenario == 'rcp85') {
+      scenario <- "rcp85"
+      print (scenario)}
     mapTG(region, vari, period, saisson, scenario, percentile)
   })
   
@@ -136,6 +142,9 @@ function(input, output, session) {
     if (input$Horizon == '2071-2100') {
       period <- "2080"
       print (period)}
+    if (input$Scenario == 'rcp85') {
+      scenario <- "rcp85"
+      print (scenario)}
     mapTG(region, vari, period, saisson, scenario, percentile)
   })
   
