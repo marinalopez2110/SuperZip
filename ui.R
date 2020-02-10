@@ -464,8 +464,8 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       ###Scenario
                                 conditionalPanel(condition = "input.Horizon == '2041-2070' || input.Horizon == '2071-2100'",      
                                       radioButtons("Scenario", "Séléctionez le scenario d'émissions:",
-                                                   c("Modérées (RCP4.5)" = "Moderees",
-                                                     "Élevées (RCP8.5)" = "Elevees"))),
+                                                   c("Modérées (RCP4.5)" = "rcp45",
+                                                     "Élevées (RCP8.5)" = "rcp85"))),
                                       
                                       
                                       ###Percentile
