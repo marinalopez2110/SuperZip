@@ -12,7 +12,7 @@ library(purrr)
 
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region, vari, period, saisson, scenario, percentile){
-  fname <- paste("WWW/",region,"_", period, "_", vari,"_", saisson,"_", scenario, "_", percentile, ".json",sep="")
+  fname <- paste("www/",region,"_", period, "_", vari,"_", saisson,"_", scenario, "_", percentile, ".json",sep="")
   print(fname)
   geojsonio::geojson_read(fname, what = "sp")
 }
