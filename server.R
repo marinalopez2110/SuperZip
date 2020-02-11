@@ -18,18 +18,22 @@ load_json <- function (region, vari, period, saisson, scenario, percentile){
 }
 
 
-addmapr <- function(dataTG, TG1, vari){ #pal
+addmapr <- function(dataTG, vari){ #pal
   if(vari == "tg_mean"){
-    pal <- colorNumeric("Spectral", domain = TG1$tg_mean)
-    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)#dataTG$vari
+    pal <- colorNumeric("Spectral", domain = c(-4.5, 13.5))
+    print ("pal")
+    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)
+    print("labels")
     fillColor <- pal(dataTG$tg_mean)
-    values <- TG1$tg_mean
+    print("fillColor")
+    values <- dataTG$tg_mean
+    print("values")
     title <- "Température (°C)"
   } else if(vari == "prcptot"){
-    pal <- colorNumeric("Spectral", domain = TG1$prcptot)
+    pal <- colorNumeric("Spectral", domain = c(350, 1700))
     labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
     fillColor <- pal(dataTG$prcptot)
-    values <- TG1$prcptot
+    values <- dataTG$prcptot
     title <- "Précipitation totale (mm)"
   } 
   
@@ -38,7 +42,7 @@ addmapr <- function(dataTG, TG1, vari){ #pal
    clearControls() %>%
    #leaflet("map")%>% #for debugging
   addPolygons (
-    data = dataTG, #OneA,
+    data = dataTG, 
     fillColor = fillColor,
     weight = 1,
     opacity = 1,
@@ -55,14 +59,14 @@ addmapr <- function(dataTG, TG1, vari){ #pal
       addLegend(pal = pal, values = values ,  title = title, opacity = 0.7,
                 position = "topleft")
  )
+  print("leafproxy")
 }
 
 mapTG <- function(region, vari, period, saisson, scenario, percentile){ 
   dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
-  TGall <- paste("www/TG","_", period, "_", vari,"_", saisson,"_", scenario, "_", percentile, ".json",sep="")
-  TG1  <- geojsonio::geojson_read(TGall, what = "sp")
+  print ("dataTG")
   vari <- vari
-  addmapr(dataTG, TG1, vari) 
+  addmapr(dataTG, vari) 
 }
 
 function(input, output, session) {
@@ -171,6 +175,6 @@ function(input, output, session) {
       period <- "2080"
       print (period)}
     dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
-    addmapr(dataTG, dataTG, vari)} })
+    addmapr(dataTG, vari)} })
 
 }
