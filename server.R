@@ -20,7 +20,7 @@ load_json <- function (region, vari, period, saisson, scenario, percentile){
 
 addmapr <- function(dataTG, vari){ #pal
   if(vari == "tg_mean"){
-    pal <- colorNumeric("Spectral", domain = c(-4.5, 13.5))
+    pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
     print ("pal")
     labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)
     print("labels")
@@ -103,6 +103,12 @@ function(input, output, session) {
     if (input$Scenario == 'rcp85') {
       scenario <- "rcp85"
       print (scenario)}
+    if (input$Percentile == '10') {
+      percentile <- "10"
+      print (percentile)}
+    if (input$Percentile == '90') {
+      percentile <- "90"
+      print (percentile)}
     mapTG(region, vari, period, saisson, scenario, percentile)
   })
  
@@ -126,6 +132,12 @@ function(input, output, session) {
     if (input$Scenario == 'rcp85') {
       scenario <- "rcp85"
       print (scenario)}
+    if (input$Percentile == '10') {
+      percentile <- "10"
+      print (percentile)}
+    if (input$Percentile == '90') {
+      percentile <- "90"
+      print (percentile)}
     mapTG(region, vari, period, saisson, scenario, percentile)
   })
   
@@ -149,6 +161,12 @@ function(input, output, session) {
     if (input$Scenario == 'rcp85') {
       scenario <- "rcp85"
       print (scenario)}
+    if (input$Percentile == '10') {
+      percentile <- "10"
+      print (percentile)}
+    if (input$Percentile == '90') {
+      percentile <- "90"
+      print (percentile)}
     mapTG(region, vari, period, saisson, scenario, percentile)
   })
   
@@ -174,6 +192,12 @@ function(input, output, session) {
     if (input$Horizon == '2071-2100') {
       period <- "2080"
       print (period)}
+    if (input$Percentile == '10') {
+      percentile <- "10"
+      print (percentile)}
+    if (input$Percentile == '90') {
+      percentile <- "90"
+      print (percentile)}
     dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
     addmapr(dataTG, vari)} })
 
