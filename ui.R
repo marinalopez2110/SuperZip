@@ -483,12 +483,14 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
            
            tabPanel((div(icon("table"),"Sommaire")),
                     br(),
-                    img(src='sommaire.png', width="900px", align="center"),
-                    # downloadButton("dowloadData2", "Télécharger")
-                    div(icon("download"), tags$a(href="Moyenne2.csv", "Télécharger CSV")),
-                    hr(),
-                    #DT::dataTableOutput("ziptable")
-           ),
+                    fluidRow(
+                      column(12,
+                             tableOutput("tabletest"),
+                             div(icon("download"), tags$a(href="Moyenne2.csv", "Télécharger CSV"))
+                      )
+                    )
+    
+                    ),
            
            tabPanel(div(icon("image"), "Graphique"),
                     br(),
