@@ -9,6 +9,10 @@ library(sp)
 library(htmltools)
 library(purrr)
 library(xtable)
+library(dygraphs)
+
+
+
 
 df <- read.table("www/testtabel.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
@@ -23,19 +27,19 @@ addmapr <- function(dataTG, vari){ #pal
   if(vari == "tg_mean"){
     pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
     print ("pal")
-    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)
+    labels <- sprintf("RÃ©gion: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)
     print("labels")
     fillColor <- pal(dataTG$tg_mean)
     print("fillColor")
     values <- dataTG$tg_mean
     print("values")
-    title <- "Température (°C)"
+    title <- "TempÃ©rature (Â°C)"
   } else if(vari == "prcptot"){
     pal <- colorNumeric("Spectral", domain = c(350, 1700))
-    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
+    labels <- sprintf("RÃ©gion: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
     fillColor <- pal(dataTG$prcptot)
     values <- dataTG$prcptot
-    title <- "Précipitation totale (mm)"
+    title <- "PrÃ©cipitation totale (mm)"
   } 
   
   return(leafletProxy("map", data = dataTG) %>%
@@ -210,8 +214,25 @@ function(input, output, session) {
   caption.placement="top",
   include.colnames=FALSE,
   add.to.row = list(pos = list(0),
-                    command = "<tr><th align='center'><br> Saison </th><th rowspan='2'><br> 1981-2010 </th><th colspan='2', align='center'> 2041-2070 </th><th  colspan='2'> 2071-2100 </th></tr>
+                    command = "<tr><th><br> Saison </th><th><br> 1981-2010 </th><th colspan='2'> 2041-2070 </th><th  colspan='2'> 2071-2100 </th></tr>
   <tr><th> </th><th> </th><th> Émissions moderées </th><th> Émissions élevées </th><th> Émissions moderées </th><th> Émissions élevées </th></tr>"
   ))
+  
+  
+  ##### FOR THE TIMESERIES FIGURE
+  
+  dfts <- read.csv("www/p4tgmean.csv")
+  rownames(dfts) <- dfts$time
+  #series <- ts(d2f$time,  df2$tg_mean_p50) 
+  keep <- c( "time", "tg_mean_p10", "tg_mean_p50", "tg_mean_p90" )
+  dfts2  <- dfts[ , keep]
+  
+  output$dygraph <- renderDygraph({
+    dfts <- read.csv("www/p4tgmean.csv")
+    rownames(dfts) <- dfts$time
+        keep <- c( "time", "tg_mean_p10", "tg_mean_p50", "tg_mean_p90" )
+    dfts2  <- dfts[ , keep]
+    dygraph(dfts2)
+  })
 
 }
