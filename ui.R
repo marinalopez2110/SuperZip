@@ -1,6 +1,7 @@
 library(shiny)
 library(leaflet)
 library(shinyWidgets)
+library(dygraphs)
 
 navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
            
@@ -494,8 +495,7 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
            
            tabPanel(div(icon("image"), "Graphique"),
                     br(),
-                    img(src='temMoy.png', width="900px", align="center"),
-                    #downloadButton("dowloadData", "Download")
+                    dygraphOutput("dygraph"),
                     div(icon("download"), tags$a(href="Moyenne.csv", "Télécharger CSV"))
            ),
            
