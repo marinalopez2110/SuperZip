@@ -8,8 +8,9 @@ library(shiny)
 library(sp)
 library(htmltools)
 library(purrr)
+library(xtable)
 
-
+df <- read.table("www/testtabel.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region, vari, period, saisson, scenario, percentile){
   fname <- paste("www/",region,"_", period, "_", vari,"_", saisson,"_", scenario, "_", percentile, ".json",sep="")
@@ -200,5 +201,17 @@ function(input, output, session) {
       print (percentile)}
     dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
     addmapr(dataTG, vari)} })
+  
+  output$tabletest <- renderTable({
+    xtable(df,digits=2, type = "html", html.table.attributes="class='table-bordered'")
+  },
+  size="footnotesize", #Change size; useful for bigger tables
+  include.rownames=FALSE, #Don't print rownames
+  caption.placement="top",
+  include.colnames=FALSE,
+  add.to.row = list(pos = list(0),
+                    command = "<tr><th align='center'><br> Saison </th><th rowspan='2'><br> 1981-2010 </th><th colspan='2', align='center'> 2041-2070 </th><th  colspan='2'> 2071-2100 </th></tr>
+  <tr><th> </th><th> </th><th> Émissions moderées </th><th> Émissions élevées </th><th> Émissions moderées </th><th> Émissions élevées </th></tr>"
+  ))
 
 }
