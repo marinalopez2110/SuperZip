@@ -14,7 +14,7 @@ library(dygraphs)
 
 
 
-df <- read.table("www/testtabel.csv", header = TRUE, sep = ";")
+df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region, vari, period, saisson, scenario, percentile){
   fname <- paste("www/",region,"_", period, "_", vari,"_", saisson,"_", scenario, "_", percentile, ".json",sep="")
