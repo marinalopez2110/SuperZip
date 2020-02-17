@@ -27,19 +27,19 @@ addmapr <- function(dataTG, vari){ #pal
   if(vari == "tg_mean"){
     pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
     print ("pal")
-    labels <- sprintf("RÃ©gion: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)
+    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)
     print("labels")
     fillColor <- pal(dataTG$tg_mean)
     print("fillColor")
     values <- dataTG$tg_mean
     print("values")
-    title <- "TempÃ©rature (Â°C)"
+    title <- "Température (°C)"
   } else if(vari == "prcptot"){
     pal <- colorNumeric("Spectral", domain = c(350, 1700))
-    labels <- sprintf("RÃ©gion: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
+    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
     fillColor <- pal(dataTG$prcptot)
     values <- dataTG$prcptot
-    title <- "PrÃ©cipitation totale (mm)"
+    title <- "Précipitation totale (mm)"
   } 
   
   return(leafletProxy("map", data = dataTG) %>%
