@@ -11,7 +11,7 @@ library(purrr)
 library(xtable)
 library(dygraphs)
 
-
+#Collines de l'Outaouais et du Témiscamingue_rcp85_tg_mean_annual.json
 
 
 df <- read.table("www/table2.csv", header = TRUE, sep = ";")
@@ -206,6 +206,8 @@ function(input, output, session) {
     dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
     addmapr(dataTG, vari)} })
   
+  
+##### FOR THE TABLE  
   output$tabletest <- renderTable({
     xtable(df,digits=2, type = "html", html.table.attributes="class='table-bordered'")
   },
