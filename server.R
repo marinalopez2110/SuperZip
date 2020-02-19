@@ -23,30 +23,84 @@ load_json <- function (region, vari, period, saisson, scenario, percentile){
 }
 
 
-addmapr <- function(dataTG, vari, all_selec){ #pal
+addmapr <- function(dataTG, vari, period, scenario, percentile, all_selec){ #pal
   if(vari == "tg_mean"){
     pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
-    print ("pal")
     if ( period == "hist"){
-      labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$hist_tg_mean_p50) #try data$[vari]
-      print("labels")
+      labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$hist_tg_mean_p50) 
       fillColor <- pal(dataTG$hist_tg_mean_p50)
-      print("fillColor")
       values <- dataTG$hist_tg_mean_p50
-      print("values")
       title <- "Température (°C) - Historique" }
     if ( period == "2050"){
-      if (scenario <- "rcp45"){
-        if (percentile == "10")
-        labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$2050_rcp45_tg_mean_p10) #try data$[vari]
-        print("labels")
-        fillColor <- pal(dataTG$hist_tg_mean_p50)
-        print("fillColor")
-        values <- dataTG$hist_tg_mean_p50
-        print("values")
-      }
-      
-    } 
+      print ("add map 2050")
+      if (scenario == "rcp45"){
+        print ("add map rcp45")
+        if (percentile == "10"){
+        labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2050_rcp45_tg_mean_p10) 
+        fillColor <- pal(dataTG$t2050_rcp45_tg_mean_p10)
+        values <- dataTG$t2050_rcp45_tg_mean_p10
+        title <- "Température (°C) 2050 rcp4.5 p10"} 
+        else  if (percentile == "50"){
+          print ("add map p50")
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2050_rcp45_tg_mean_p50)
+          fillColor <- pal(dataTG$t2050_rcp45_tg_mean_p50)
+          values <- dataTG$t2050_rcp45_tg_mean_p50
+          title <- "Température (°C) 2050 rcp4.5 p50"} 
+        else if (percentile == "90"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2050_rcp45_tg_mean_p90)
+          fillColor <- pal(dataTG$t2050_rcp45_tg_mean_p90)
+          values <- dataTG$t2050_rcp45_tg_mean_p90
+         title <- "Température (°C) 2050 rcp4.5 p90"}}
+      else if (scenario == "rcp85"){
+        if (percentile == "10"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2050_rcp85_tg_mean_p10) 
+          fillColor <- pal(dataTG$t2050_rcp85_tg_mean_p10)
+          values <- dataTG$t2050_rcp85_tg_mean_p10
+          title <- "Température (°C) 2050 rcp8.5 p10"} 
+        else  if (percentile == "50"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2050_rcp85_tg_mean_p50)
+          fillColor <- pal(dataTG$t2050_rcp85_tg_mean_p50)
+          values <- dataTG$t2050_rcp85_tg_mean_p50
+          title <- "Température (°C) 2050 rcp8.5 p50"} 
+        else if (percentile == "90"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2050_rcp85_tg_mean_p90)
+          fillColor <- pal(dataTG$t2050_rcp85_tg_mean_p90)
+          values <- dataTG$t2050_rcp85_tg_mean_p90
+          title <- "Température (°C) 2050 rcp8.5 p90"}}} 
+    else  if ( period == "2080"){
+      if (scenario == "rcp45"){
+        if (percentile == "10"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2080_rcp45_tg_mean_p10) 
+          fillColor <- pal(dataTG$t2080_rcp45_tg_mean_p10)
+          values <- dataTG$t2080_rcp45_tg_mean_p10
+          title <- "Température (°C) 2080 rcp4.5 p10"} 
+        else  if (percentile == "50"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2080_rcp45_tg_mean_p50)
+          fillColor <- pal(dataTG$t2080_rcp45_tg_mean_p50)
+          values <- dataTG$t2080_rcp45_tg_mean_p50
+          title <- "Température (°C) 2080 rcp4.5 p50"} 
+        else if (percentile == "90"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2080_rcp45_tg_mean_p90)
+          fillColor <- pal(dataTG$t2080_rcp45_tg_mean_p90)
+          values <- dataTG$t2080_rcp45_tg_mean_p90
+          title <- "Température (°C) 2080 rcp4.5 p90"}}
+      else if (scenario == "rcp85"){
+        if (percentile == "10"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2080_rcp85_tg_mean_p10) 
+          fillColor <- pal(dataTG$t2080_rcp85_tg_mean_p10)
+          values <- dataTG$t2080_rcp85_tg_mean_p10
+          title <- "Température (°C) 2080 rcp8.5 p10"} 
+        else  if (percentile == "50"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2080_rcp85_tg_mean_p50)
+          fillColor <- pal(dataTG$t2080_rcp85_tg_mean_p50)
+          values <- dataTG$t2080_rcp85_tg_mean_p50
+          title <- "Température (°C) 2080 rcp8.5 p50"} 
+        else if (percentile == "90"){
+          labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$t2080_rcp85_tg_mean_p90)
+          fillColor <- pal(dataTG$t2080_rcp85_tg_mean_p90)
+          values <- dataTG$t2080_rcp85_tg_mean_p90
+          title <- "Température (°C) 2080 rcp8.5 p90"}}}
+    
 }
     else if(vari == "prcptot"){
     pal <- colorNumeric("Spectral", domain = c(350, 1700))
@@ -85,7 +139,7 @@ mapTG <- function(region, vari, period, saisson, scenario, percentile, all_selec
   dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
   print ("dataTG")
   vari <- vari
-  addmapr(dataTG, vari, all_selec) 
+  addmapr(dataTG, vari, period, scenario, percentile, all_selec) 
 }
 
 function(input, output, session) {
@@ -237,7 +291,7 @@ function(input, output, session) {
       percentile <- "90"
       print (percentile)}
     dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
-    addmapr(dataTG, vari)} })
+    addmapr(dataTG, vari, period, scenario, percentile, all_selec)} })
   
   
 ##### FOR THE TABLE  
