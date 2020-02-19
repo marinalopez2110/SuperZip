@@ -17,7 +17,7 @@ library(dygraphs)
 df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region, vari, period, saisson, scenario, percentile){
-  fname <- paste("www/",region,"_", scenario,"_", vari, "_",saisson, ".json",sep="")
+  fname <- paste("www/",region,"_", vari, "_",saisson, ".json",sep="")
   print(fname)
   geojsonio::geojson_read(fname, what = "sp")
 }
