@@ -27,14 +27,28 @@ addmapr <- function(dataTG, vari, all_selec){ #pal
   if(vari == "tg_mean"){
     pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
     print ("pal")
-    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$hist_tg_mean_p50) #try data$[vari]
-    print("labels")
-    fillColor <- pal(dataTG$hist_tg_mean_p50)
-    print("fillColor")
-    values <- dataTG$hist_tg_mean_p50
-    print("values")
-    title <- "Température (°C)"
-  } else if(vari == "prcptot"){
+    if ( period == "hist"){
+      labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$hist_tg_mean_p50) #try data$[vari]
+      print("labels")
+      fillColor <- pal(dataTG$hist_tg_mean_p50)
+      print("fillColor")
+      values <- dataTG$hist_tg_mean_p50
+      print("values")
+      title <- "Température (°C) - Historique" }
+    if ( period == "2050"){
+      if (scenario <- "rcp45"){
+        if (percentile == "10")
+        labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$2050_rcp45_tg_mean_p10) #try data$[vari]
+        print("labels")
+        fillColor <- pal(dataTG$hist_tg_mean_p50)
+        print("fillColor")
+        values <- dataTG$hist_tg_mean_p50
+        print("values")
+      }
+      
+    } 
+}
+    else if(vari == "prcptot"){
     pal <- colorNumeric("Spectral", domain = c(350, 1700))
     labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
     fillColor <- pal(dataTG$prcptot)
