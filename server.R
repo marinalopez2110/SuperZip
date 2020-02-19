@@ -17,21 +17,21 @@ library(dygraphs)
 df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region, vari, period, saisson, scenario, percentile){
-  fname <- paste("www/",region,"_", period, "_", vari,"_", saisson,"_", scenario, "_", percentile, ".json",sep="")
+  fname <- paste("www/",region,"_", scenario,"_", vari, "_",saisson, ".json",sep="")
   print(fname)
   geojsonio::geojson_read(fname, what = "sp")
 }
 
 
-addmapr <- function(dataTG, vari){ #pal
+addmapr <- function(dataTG, vari, all_selec){ #pal
   if(vari == "tg_mean"){
     pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
     print ("pal")
-    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$tg_mean)
+    labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$hist_tg_mean_p50) #try data$[vari]
     print("labels")
-    fillColor <- pal(dataTG$tg_mean)
+    fillColor <- pal(dataTG$hist_tg_mean_p50)
     print("fillColor")
-    values <- dataTG$tg_mean
+    values <- dataTG$hist_tg_mean_p50
     print("values")
     title <- "Température (°C)"
   } else if(vari == "prcptot"){
@@ -67,11 +67,11 @@ addmapr <- function(dataTG, vari){ #pal
   print("leafproxy")
 }
 
-mapTG <- function(region, vari, period, saisson, scenario, percentile){ 
+mapTG <- function(region, vari, period, saisson, scenario, percentile, all_selec){ 
   dataTG <- load_json(region, vari, period, saisson, scenario, percentile)
   print ("dataTG")
   vari <- vari
-  addmapr(dataTG, vari) 
+  addmapr(dataTG, vari, all_selec) 
 }
 
 function(input, output, session) {
@@ -96,15 +96,34 @@ function(input, output, session) {
     saisson <- "annual"
     scenario <- "rcp45"
     percentile <- "50"
+    all_selec <- "hist_tg_mean_p50"
     if (input$PrecTotale) {
       vari <- "prcptot"
       print (vari)}
     if (input$Horizon == '2041-2070') {
       period <- "2050"
-      print (period)}
+      all_selec <- "2050_tg_mean_p50"
+      print (period)
+      if (input$Percentile == '10') {
+        percentile <- "10"
+        all_selec <- "2050_tg_mean_p10"
+        print (percentile)}
+      if (input$Percentile == '90') {
+        percentile <- "90"
+        all_selec <- "2050_tg_mean_p90"
+        print (percentile)}}
     if (input$Horizon == '2071-2100') {
       period <- "2080"
-      print (period)}
+      all_selec <- "2080_tg_mean_p50"
+      print (period)
+      if (input$Percentile == '10') {
+        percentile <- "10"
+        all_selec <- "2080_tg_mean_p10"
+        print (percentile)}
+      if (input$Percentile == '90') {
+        percentile <- "90"
+        all_selec <- "2080_tg_mean_p90"
+        print (percentile)}}
     if (input$Scenario == 'rcp85') {
       scenario <- "rcp85"
       print (scenario)}
@@ -114,7 +133,7 @@ function(input, output, session) {
     if (input$Percentile == '90') {
       percentile <- "90"
       print (percentile)}
-    mapTG(region, vari, period, saisson, scenario, percentile)
+    mapTG(region, vari, period, saisson, scenario, percentile, all_selec)
   })
  
   observe({
