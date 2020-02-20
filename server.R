@@ -12,15 +12,12 @@ library(xtable)
 library(dygraphs)
 library(stringr)
 
-
+###### LOAD GEOJSON FILE
 df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region, vari, saisson){
   #SUBSTITUTE ACCENTS
-  #nameA <-  iconv(region, to='ASCII//TRANSLIT')
   print ("load json")
-  #pats <- c("é|É|à|è|Î|È|ô|Ç|ç")
-  #repl <- c("e||a|e||E|o|C|c")
   nameA <- str_replace_all(region, c( "é"="e", "É"="E", "à"="a", "è"="e", "Î"="i", "È"="E", "ô" ="o", "Ç"="C", "ç"="c"))
   print (nameA)
   fname <- paste("www/",nameA,"_", vari, "_",saisson, ".json",sep="")
@@ -28,6 +25,7 @@ load_json <- function (region, vari, saisson){
   geojsonio::geojson_read(fname, what = "sp")
 }
 
+####### CONDITIONS FOR OPTIONS
 conditions <- function(horizon, scenario, percentile){
   if (horizon == 'Historique'){
     all_selec <- "hist_p50"
@@ -63,27 +61,28 @@ conditions <- function(horizon, scenario, percentile){
           all_selec <- "t2080_rcp85_p90"}}}
   return(all_selec)}
 
+
+
+#### MODIFY MAP BASED ON SELECTION - LEAFLETPROXY
 addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, all_selec){ 
- # if(vari == "tg_mean"){
-    pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
     print (region)
     print (namer)
     print("all_selec")
     labels <- sprintf("Région: %s : %s", dataTG[[namer]], dataTG[[all_selec]]) 
     print ("labels")
+    print ("values")
+    if(vari == "tg_mean"){
+    pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
+    title <- sprintf("Température (°C) -%s", all_selec)
+    values <- c(-4.5, 14)
+    print("title")}
+    else if(vari == "prcptot"){
+    pal <- colorNumeric("Spectral", domain = c(800, 1450))
+    title <- sprintf("Précipitation totale (mm) -%s", all_selec)
+    values <- c(800, 1450)
+    print("title")} 
     fillColor <- pal(dataTG[[all_selec]])
     print ("fillcolor")
-    values <- c(-4.5, 14) #dataTG[[all_selec]]
-    print ("values")
-    title <- sprintf("Température (°C) -%s", all_selec)
-    print("title")#}
-
-    # else if(vari == "prcptot"){
-    # pal <- colorNumeric("Spectral", domain = c(350, 1700))
-    # labels <- sprintf("Région: %s - %s", dataTG$TER_GUIDE, dataTG$prcptot)#dataTG$vari
-    # fillColor <- pal(dataTG$prcptot)
-    # values <- dataTG$prcptot
-    # title <- "Précipitation totale (mm)"} 
   
   return(leafletProxy("map", data = dataTG) %>%
    clearControls() %>%
@@ -109,6 +108,8 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
   #print("leafproxy")
 }
 
+##### INTERMIDIATE STEP *** CHECK IF STILL NEED IT
+
 mapTG <- function(region, namer, vari, period, saisson, scenario, percentile, all_selec){ 
   print (region)
   dataTG <- load_json(region, vari, saisson)
@@ -117,6 +118,8 @@ mapTG <- function(region, namer, vari, period, saisson, scenario, percentile, al
   addmapr(dataTG, vari, region, namer, period, scenario, percentile, all_selec) 
 }
 
+
+##### SHINY FUNCTION
 function(input, output, session) {
   
   ## Interactive Map ###########################################
@@ -130,7 +133,8 @@ function(input, output, session) {
       setView(lat = 45.6, lng= -70.5, zoom = 7)
   })
   
-
+  
+  ###### OBSERVE FOR FIRST REGION AND ALL REGION
   observe({
     if (input$Echele == 'Domaines bioclimatiques'){
       namer <- "NOM"
@@ -171,13 +175,16 @@ function(input, output, session) {
     saisson <- "annual"
     scenario <- "rcp45"
     percentile <- "50"
-    #all_selec <- "hist_p50"
-    # if (input$PrecTotale) {
-    #   vari <- "prcptot"
-    #   print (vari)}
-    # if (input$Moyenne) {
-    #   vari <- "tg_mean"
-    #   print (vari)}
+    
+    ### CHANGING VARIABLE
+     if (input$PrecTotale) {
+       vari <- "prcptot"
+       print (vari)}
+     if (input$Moyenne) {
+       vari <- "tg_mean"
+       print (vari)}
+    
+    #### CHANGING TIME PERIOD AND PERCENTILE
     if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
     horizon <- input$Horizon
     scenario <- input$Scenario
@@ -265,7 +272,9 @@ function(input, output, session) {
   #     print (percentile)}
   #   mapTG(region, vari, period, saisson, scenario, percentile)
   # })
+ 
   
+#######CLEAN UP BUTTON 
   observeEvent(  input$Nettoyer, {
     leafletProxy("map") %>%
     clearShapes()
@@ -288,7 +297,7 @@ function(input, output, session) {
   ))
   
   
-  ##### FOR THE TIMESERIES FIGURE
+ ##### FOR THE TIMESERIES FIGURE
   
   dfts <- read.csv("www/p4tgmean.csv")
   rownames(dfts) <- dfts$time
