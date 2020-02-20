@@ -23,45 +23,49 @@ load_json <- function (region, vari, saisson){
 }
 
 conditions <- function(horizon, scenario, percentile){
-  if (input$Horizon == '2041-2070') {
-    if (input$Scenario == "rcp45"){
-      if(input$Percentile == "10"){
+  if (horizon == 'Historique'){
+    all_selec <- "hist_p50"
+  } else  if (horizon == '2041-2070') {
+    if (scenario == "rcp45"){
+      if(percentile == "10"){
         all_selec <- "t2050_rcp45_p10"
-      } else if(input$Percentile == "50"){
+      } else if(percentile == "50"){
         all_selec <- "t2050_rcp45_p50"
-      } else if(input$Percentile == "90"){
+      } else if(percentile == "90"){
         all_selec <- "t2050_rcp45_p90"}
-    } else if (input$Scenario == "rcp85"){
-      if(input$Percentile == "10"){
+    } else if (scenario == "rcp85"){
+      if(percentile == "10"){
         all_selec <- "t2050_rcp85_p10"
-      } else if(input$Percentile == "50"){
+      } else if(percentile == "50"){
         all_selec <- "t2050_rcp85_p50"
-      } else if(input$Percentile == "90"){
+      } else if(percentile == "90"){
         all_selec <- "t2050_rcp85_p90"}
-    } } else if (input$Horizon == '2071-2100') {
-      if (input$Scenario == "rcp45"){
-        if(input$Percentile == "10"){
+    } } else if (horizon == '2071-2100') {
+      if (scenario == "rcp45"){
+        if(percentile == "10"){
           all_selec <- "t2080_rcp45_p10"
-        } else if(input$Percentile == "50"){
+        } else if(percentile == "50"){
           all_selec <- "t2080_rcp45_p50"
-        } else if(input$Percentile == "90"){
+        } else if(percentile == "90"){
           all_selec <- "t2080_rcp45_p90"}
-      } else if (input$Scenario == "rcp85"){
-        if(input$Percentile == "10"){
+      } else if (scenario == "rcp85"){
+        if(percentile == "10"){
           all_selec <- "t2080_rcp85_p10"
-        } else if(input$Percentile == "50"){
+        } else if(percentile == "50"){
           all_selec <- "t2080_rcp85_p50"
-        } else if(input$Percentile == "90"){
+        } else if(percentile == "90"){
           all_selec <- "t2080_rcp85_p90"}}}
   return(all_selec)}
 
-addmapr <- function(dataTG, vari, period, scenario, percentile, all_selec){ 
+addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, all_selec){ 
  # if(vari == "tg_mean"){
     pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
-    print ("pal")
-    print(all_selec)
-    #print(dataTG[[all_selec]])
-    labels <- sprintf("Région: %s : %s", dataTG$TER_GUIDE, dataTG[[all_selec]]) 
+    print (region)
+    print (namer)
+    #print(all_selec)
+    print("all_selec")
+    print(dataTG[[namer]])
+    labels <- sprintf("Région: %s : %s", dataTG[[namer]], dataTG[[all_selec]]) 
     print ("labels")
     fillColor <- pal(dataTG[[all_selec]])
     print ("fillcolor")
@@ -101,11 +105,11 @@ addmapr <- function(dataTG, vari, period, scenario, percentile, all_selec){
   #print("leafproxy")
 }
 
-mapTG <- function(region, vari, period, saisson, scenario, percentile, all_selec){ 
+mapTG <- function(region, namer, vari, period, saisson, scenario, percentile, all_selec){ 
   dataTG <- load_json(region, vari, saisson)
   print ("dataTG" )
   vari <- vari
-  addmapr(dataTG, vari, period, scenario, percentile, all_selec) 
+  addmapr(dataTG, vari, region, namer, period, scenario, percentile, all_selec) 
 }
 
 function(input, output, session) {
@@ -123,58 +127,67 @@ function(input, output, session) {
   
 
   observe({
+    if (input$Echele == 'Domaines bioclimatiques'){
+      namer <- "NOM"
+      if (input$Sousregions == "Toutes") {region <- "DB"} 
+      else {region <- input$Domaines}
+    } else  if (input$Echele == "Sous-domaines bioclimatiques"){
+      namer <- "NOM"
+      if (input$Sousregions == "Toutes") {region <- "SDB"} 
+      else {region <- input$Sous-domaines}
+    } else  if (input$Echele == "Régions écologiques"){
+      namer <- "NOM"
+      if (input$Sousregions == "Toutes") {region <- "RE"} 
+      else {region <- input$RegEcol}
+    } else  if (input$Echele ==  "Sous-région écologiques"){
+      namer <- "NOM"
+      if (input$Sousregions == "Toutes") {region <- "SRE"} 
+      else {region <- input$SousRegEcol}
+    } else  if (input$Echele == "Territoires guides"){
+      namer <- "TER_GUIDE"
+      if (input$Sousregions == "Toutes") {region <- "TG"} 
+      else {region <- input$Territoires}
+    } else  if (input$Echele == "Secteurs des opérations régionales"){
+      namer <- "D_GENERAL"
+      if (input$Sousregions == "Toutes") {region <- "SOR"} 
+      else {region <- input$Secteurs}
+    } else  if (input$Echele == "Régions forestières"){
+      namer <- "NOM"
+      if (input$Sousregions == "Toutes") {region <- "RF"} 
+      else {region <- input$RegForest}
+    } else  if (input$Echele == "Unités d'aménagement (UA)"){
+      namer <- "NOM"
+      if (input$Sousregions == "Toutes") {region <- "UA"} 
+      else {region <- input$UA}
+    }
     #Default values
-    region <- input$Territoires
     vari <- "tg_mean"
     period <- "hist"
     saisson <- "annual"
     scenario <- "rcp45"
     percentile <- "50"
-    all_selec <- "hist_p50"
-    if (input$PrecTotale) {
-      vari <- "prcptot"
-      print (vari)}
-    if (input$Moyenne) {
-      vari <- "tg_mean"
-      print (vari)}
-    if (input$Horizon == '2041-2070') {
-      if (input$Scenario == "rcp45"){
-        if(input$Percentile == "10"){
-          all_selec <- "t2050_rcp45_p10"
-        } else if(input$Percentile == "50"){
-          all_selec <- "t2050_rcp45_p50"
-        } else if(input$Percentile == "90"){
-          all_selec <- "t2050_rcp45_p90"}
-      } else if (input$Scenario == "rcp85"){
-        if(input$Percentile == "10"){
-          all_selec <- "t2050_rcp85_p10"
-        } else if(input$Percentile == "50"){
-          all_selec <- "t2050_rcp85_p50"
-        } else if(input$Percentile == "90"){
-          all_selec <- "t2050_rcp85_p90"}
-      } } else if (input$Horizon == '2071-2100') {
-        if (input$Scenario == "rcp45"){
-          if(input$Percentile == "10"){
-            all_selec <- "t2080_rcp45_p10"
-          } else if(input$Percentile == "50"){
-            all_selec <- "t2080_rcp45_p50"
-          } else if(input$Percentile == "90"){
-            all_selec <- "t2080_rcp45_p90"}
-        } else if (input$Scenario == "rcp85"){
-          if(input$Percentile == "10"){
-            all_selec <- "t2080_rcp85_p10"
-          } else if(input$Percentile == "50"){
-            all_selec <- "t2080_rcp85_p50"
-          } else if(input$Percentile == "90"){
-            all_selec <- "t2080_rcp85_p90"}}} 
-    mapTG(region, vari, period, saisson, scenario, percentile, all_selec)
+    #all_selec <- "hist_p50"
+    # if (input$PrecTotale) {
+    #   vari <- "prcptot"
+    #   print (vari)}
+    # if (input$Moyenne) {
+    #   vari <- "tg_mean"
+    #   print (vari)}
+    if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
+    horizon <- input$Horizon
+    scenario <- input$Scenario
+    percentile <- input$Percentile
+    all_selec <- conditions(horizon, scenario, percentile)}
+    mapTG(region, namer, vari, period, saisson, scenario, percentile, all_selec)
   })
+  
+  
  
   # observe({
   #   #Default values
   #   region <- input$Territoires2
   #   vari <- "tg_mean"
-  #   period <- "hist"
+  #   period <- "hist")
   #   saisson <- "annual"
   #   scenario <- "rcp45"
   #   percentile <- "50"
@@ -276,7 +289,7 @@ function(input, output, session) {
           } else if(input$Percentile == "90"){
             all_selec <- "t2080_rcp85_p90"}}}
     dataTG <- load_json(region, vari, saisson)
-    addmapr(dataTG, vari, period, scenario, percentile, all_selec)} })
+    addmapr(dataTG, vari, region, namer,  period, scenario, percentile, all_selec)} })
   
   
 ##### FOR THE TABLE  
