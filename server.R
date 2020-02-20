@@ -10,14 +10,20 @@ library(htmltools)
 library(purrr)
 library(xtable)
 library(dygraphs)
-
-
+library(stringr)
 
 
 df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 load_json <- function (region, vari, saisson){
-  fname <- paste("www/",region,"_", vari, "_",saisson, ".json",sep="")
+  #SUBSTITUTE ACCENTS
+  #nameA <-  iconv(region, to='ASCII//TRANSLIT')
+  print ("load json")
+  #pats <- c("é|É|à|è|Î|È|ô|Ç|ç")
+  #repl <- c("e||a|e||E|o|C|c")
+  nameA <- str_replace_all(region, c( "é"="e", "É"="E", "à"="a", "è"="e", "Î"="i", "È"="E", "ô" ="o", "Ç"="C", "ç"="c"))
+  print (nameA)
+  fname <- paste("www/",nameA,"_", vari, "_",saisson, ".json",sep="")
   print(fname)
   geojsonio::geojson_read(fname, what = "sp")
 }
@@ -62,14 +68,12 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
     print (region)
     print (namer)
-    #print(all_selec)
     print("all_selec")
-    print(dataTG[[namer]])
     labels <- sprintf("Région: %s : %s", dataTG[[namer]], dataTG[[all_selec]]) 
     print ("labels")
     fillColor <- pal(dataTG[[all_selec]])
     print ("fillcolor")
-    values <- dataTG[[all_selec]]
+    values <- c(-4.5, 14) #dataTG[[all_selec]]
     print ("values")
     title <- sprintf("Température (°C) -%s", all_selec)
     print("title")#}
@@ -106,6 +110,7 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
 }
 
 mapTG <- function(region, namer, vari, period, saisson, scenario, percentile, all_selec){ 
+  print (region)
   dataTG <- load_json(region, vari, saisson)
   print ("dataTG" )
   vari <- vari
@@ -134,7 +139,7 @@ function(input, output, session) {
     } else  if (input$Echele == "Sous-domaines bioclimatiques"){
       namer <- "NOM"
       if (input$Sousregions == "Toutes") {region <- "SDB"} 
-      else {region <- input$Sous-domaines}
+      else {region <- input$Sousdomaines}
     } else  if (input$Echele == "Régions écologiques"){
       namer <- "NOM"
       if (input$Sousregions == "Toutes") {region <- "RE"} 
@@ -152,11 +157,11 @@ function(input, output, session) {
       if (input$Sousregions == "Toutes") {region <- "SOR"} 
       else {region <- input$Secteurs}
     } else  if (input$Echele == "Régions forestières"){
-      namer <- "NOM"
+      namer <- "NM_REG_FOR"
       if (input$Sousregions == "Toutes") {region <- "RF"} 
       else {region <- input$RegForest}
-    } else  if (input$Echele == "Unités d'aménagement (UA)"){
-      namer <- "NOM"
+    } else  if (input$Echele == "Unités d’aménagement (UA)"){
+      namer <- "PER_NO_UA"
       if (input$Sousregions == "Toutes") {region <- "UA"} 
       else {region <- input$UA}
     }
@@ -183,34 +188,54 @@ function(input, output, session) {
   
   
  
-  # observe({
-  #   #Default values
-  #   region <- input$Territoires2
-  #   vari <- "tg_mean"
-  #   period <- "hist")
-  #   saisson <- "annual"
-  #   scenario <- "rcp45"
-  #   percentile <- "50"
-  #   if (input$PrecTotale) {
-  #     vari <- "prcptot"
-  #     print (vari)}
-  #   if (input$Horizon == '2041-2070') {
-  #     period <- "2050"
-  #     print (period)}
-  #   if (input$Horizon == '2071-2100') {
-  #     period <- "2080"
-  #     print (period)}
-  #   if (input$Scenario == 'rcp85') {
-  #     scenario <- "rcp85"
-  #     print (scenario)}
-  #   if (input$Percentile == '10') {
-  #     percentile <- "10"
-  #     print (percentile)}
-  #   if (input$Percentile == '90') {
-  #     percentile <- "90"
-  #     print (percentile)}
-  #   mapTG(region, vari, period, saisson, scenario, percentile)
-  # })
+  #  observe({
+  #    if (input$Sousregions == "deux"){
+  #      if (input$Echele == 'Domaines bioclimatiques'){
+  #        namer <- "NOM"
+  #        region <- input$Domaines2} 
+  #   else if (input$Echele == "Sous-domaines bioclimatiques"){
+  #   namer <- "NOM"
+  #   region <- input$Sous-domaines2}
+  #   else  if (input$Echele == "Régions écologiques"){
+  #   namer <- "NOM"
+  #   region <- input$RegEcol2}
+  #   else  if (input$Echele ==  "Sous-région écologiques"){
+  #   namer <- "NOM"
+  #   region <- input$SousRegEcol2}
+  #   else  if (input$Echele == "Territoires guides"){
+  #   namer <- "TER_GUIDE"
+  #   region <- input$Territoires2}
+  #   else  if (input$Echele == "Secteurs des opérations régionales"){
+  #   namer <- "D_GENERAL"
+  #   region <- input$Secteurs2}
+  #   else  if (input$Echele == "Régions forestières"){
+  #   namer <- "NOM"
+  #   region <- input$RegForest2}
+  #   else  if (input$Echele == "Unités d'aménagement (UA)"){
+  #   namer <- "NOM"
+  #   region <- input$UA2}
+  # }
+  # #Default values
+  # vari <- "tg_mean"
+  # period <- "hist"
+  # saisson <- "annual"
+  # scenario <- "rcp45"
+  # percentile <- "50"
+  # #all_selec <- "hist_p50"
+  # # if (input$PrecTotale) {
+  # #   vari <- "prcptot"
+  # #   print (vari)}
+  # # if (input$Moyenne) {
+  # #   vari <- "tg_mean"
+  # #   print (vari)}
+  # if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
+  #   horizon <- input$Horizon
+  #   scenario <- input$Scenario
+  #   percentile <- input$Percentile
+  #   all_selec <- conditions(horizon, scenario, percentile)}
+  # mapTG(region, namer, vari, period, saisson, scenario, percentile, all_selec)
+  #  })
+
   # 
   # observe({
   #   #Default values
@@ -247,50 +272,7 @@ function(input, output, session) {
   })
   
   
-  observe({ if (input$Echele == "Territoires guides" && input$Sousregions == "Toutes") {
-    region <- "TG"
-    vari <- "tg_mean"
-    period <- "hist"
-    saisson <- "annual"
-    scenario <- "rcp45"
-    percentile <- "50"
-    all_selec <- "hist_p50"
-    if (input$PrecTotale) {
-      vari <- "prcptot"
-      print (vari)}
-    if (input$Horizon == '2041-2070') {
-      if (input$Scenario == "rcp45"){
-        if(input$Percentile == "10"){
-          all_selec <- "t2050_rcp45_p10"
-        } else if(input$Percentile == "50"){
-          all_selec <- "t2050_rcp45_p50"
-        } else if(input$Percentile == "90"){
-          all_selec <- "t2050_rcp45_p90"}
-      } else if (input$Scenario == "rcp85"){
-        if(input$Percentile == "10"){
-          all_selec <- "t2050_rcp85_p10"
-        } else if(input$Percentile == "50"){
-          all_selec <- "t2050_rcp85_p50"
-        } else if(input$Percentile == "90"){
-          all_selec <- "t2050_rcp85_p90"}
-      } } else if (input$Horizon == '2071-2100') {
-        if (input$Scenario == "rcp45"){
-          if(input$Percentile == "10"){
-            all_selec <- "t2080_rcp45_p10"
-          } else if(input$Percentile == "50"){
-            all_selec <- "t2080_rcp45_p50"
-          } else if(input$Percentile == "90"){
-            all_selec <- "t2080_rcp45_p90"}
-        } else if (input$Scenario == "rcp85"){
-          if(input$Percentile == "10"){
-            all_selec <- "t2080_rcp85_p10"
-          } else if(input$Percentile == "50"){
-            all_selec <- "t2080_rcp85_p50"
-          } else if(input$Percentile == "90"){
-            all_selec <- "t2080_rcp85_p90"}}}
-    dataTG <- load_json(region, vari, saisson)
-    addmapr(dataTG, vari, region, namer,  period, scenario, percentile, all_selec)} })
-  
+
   
 ##### FOR THE TABLE  
   output$tabletest <- renderTable({
