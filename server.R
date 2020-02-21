@@ -18,7 +18,7 @@ df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 load_json <- function (region, vari, saisson){
   #SUBSTITUTE ACCENTS
   print ("load json")
-  nameA <- str_replace_all(region, c( "é"="e", "É"="E", "à"="a", "è"="e", "Î"="i", "È"="E", "ô" ="o", "Ç"="C", "ç"="c"))
+  nameA <- str_replace_all(region, c( "é"= "e", "à"="a", "è"= "e", "ô" = "o", "ç"="c", "É"="E", "È"="E", "Î"="i", "Ç"="C"))
   print (nameA)
   fname <- paste("www/",nameA,"_", vari, "_",saisson, ".json",sep="")
   print(fname)
@@ -72,15 +72,32 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     print ("labels")
     print ("values")
     if(vari == "tg_mean"){
-    pal <- colorNumeric("Spectral", domain = c(-4.5, 14))
+    pal <- colorNumeric("Spectral", domain = c(-25, 28))
     title <- sprintf("Température (°C) -%s", all_selec)
-    values <- c(-4.5, 14)
+    values <- c(-25, 28)
     print("title")}
+    else if(vari == "tn_mean"){
+      pal <- colorNumeric("Spectral", domain = c(-28, 23))
+      title <- sprintf("Température (°C) -%s", all_selec)
+      values <- c(-28, 23)
+      print("title")}
+    else if(vari == "tx_mean"){
+      pal <- colorNumeric("Spectral", domain = c(-28, 34))
+      title <- sprintf("Température (°C) -%s", all_selec)
+      values <- c(-28, 34)
+      print("title")}
     else if(vari == "prcptot"){
-    pal <- colorNumeric("Spectral", domain = c(800, 1450))
+    pal <- colorNumeric("Spectral", domain = c(800, 1500))
     title <- sprintf("Précipitation totale (mm) -%s", all_selec)
-    values <- c(800, 1450)
+    values <- c(800, 1500)
     print("title")} 
+    else if(vari == "DJC"){
+      pal <- colorNumeric("Spectral", domain = c(200, 4200))
+      title <- sprintf("Degrés-jours de croissance (DJC) -%s", all_selec)
+      values <- c(200, 4200)
+      print("title")} 
+    
+    
     fillColor <- pal(dataTG[[all_selec]])
     print ("fillcolor")
   
@@ -183,6 +200,15 @@ function(input, output, session) {
      if (input$Moyenne) {
        vari <- "tg_mean"
        print (vari)}
+    if (input$Maximum) {
+      vari <- "tx_mean"
+      print (vari)}
+    if (input$Minimum) {
+      vari <- "tn_mean"
+      print (vari)}
+    if (input$Variable == "Degrés-jours de croissance"){
+      vari <- "DJC"
+      print (vari)}
     
     #### CHANGING TIME PERIOD AND PERCENTILE
     if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
