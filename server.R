@@ -54,21 +54,21 @@ conditions <- function(horizon, scenario, percentile){
   return(all_selec)}
 
 ##### INTERMIDIATE STEP *** CHECK IF STILL NEED IT
-mapTG <- function(region, namer, vari, period, saisson, scenario, percentile, all_selec){ 
+mapTG <- function(region, namer, vari, period, saison, scenario, percentile, all_selec){ 
   print (region)
-  dataTG <- load_json(region, vari, saisson)
+  dataTG <- load_json(region, vari, saison)
   print ("dataTG" )
   vari <- vari
   addmapr(dataTG, vari, region, namer, period, scenario, percentile, all_selec) 
 }
 
 ###### LOAD GEOJSON FILE
-load_json <- function (region, vari, saisson){
+load_json <- function (region, vari, saison){
   #SUBSTITUTE ACCENTS
   print ("load json")
   nameA <- str_replace_all(region, c( "é"= "e", "à"="a", "è"= "e", "ô" = "o", "ç"="c", "É"="E", "È"="E", "Î"="i", "Ç"="C"))
   print (nameA)
-  fname <- paste("www/",nameA,"_", vari, "_",saisson, ".json",sep="")
+  fname <- paste("www/",nameA,"_", vari, "_",saison, ".json",sep="")
   print(fname)
   geojsonio::geojson_read(fname, what = "sp")
 }
@@ -202,7 +202,7 @@ function(input, output, session) {
     #Default values
     vari <- "tg_mean"
     period <- "hist"
-    saisson <- "annual"
+    saison <- "annual"
     scenario <- "rcp45"
     percentile <- "50"
     
@@ -230,7 +230,7 @@ function(input, output, session) {
         print ("button GelDegel")}
       if (input$Variable == "Saison de croissance"){
       vari <- "growing_season_length"
-      print ("button Saisson de croissance")}
+      print ("button Saison de croissance")}
 
     #### CHANGING TIME PERIOD AND PERCENTILE
     if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
@@ -238,7 +238,7 @@ function(input, output, session) {
     scenario <- input$Scenario
     percentile <- input$Percentile
     all_selec <- conditions(horizon, scenario, percentile)}
-    mapTG(region, namer, vari, period, saisson, scenario, percentile, all_selec)
+    mapTG(region, namer, vari, period, saison, scenario, percentile, all_selec)
   })
   
   
@@ -318,7 +318,7 @@ function(input, output, session) {
   #   if (input$Percentile == '90') {
   #     percentile <- "90"
   #     print (percentile)}
-  #   mapTG(region, vari, period, saisson, scenario, percentile)
+  #   mapTG(region, vari, period, saison, scenario, percentile)
   # })
  
   
