@@ -117,9 +117,9 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
       values <- c(40, 105)
       print("title")} 
     else if(vari == "growing_season_length"){
-      pal <- colorNumeric("Spectral", domain = c(115, 215))
+      pal <- colorNumeric("Spectral", domain = c(100, 215))
       title <- sprintf("Saison de croissance -%s", all_selec)
-      values <- c(115, 215)
+      values <- c(100, 215)
       print("title")} 
     fillColor <- pal(dataTG[[all_selec]])
     print ("fillcolor--------------------")
