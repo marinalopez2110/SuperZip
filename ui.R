@@ -431,16 +431,9 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       
                                       ###Variable
                                       selectInput("Variable", "Séléctionez la variable climatique:",
-                                                  choices=c("Températures moyennes, min et max","Précipitations totales et sous forme de neige",
+                                                  choices=c("Températures moyennes", "Températures minimales", "Températures maximales", "Précipitations totales",  
+                                                            "Précipitations sous forme de neige",
                                                             "Degrés-jours de croissance", "Évènements gel-dégel", "Saison de croissance")),
-                                      conditionalPanel(condition = "input.Variable == 'Températures moyennes, min et max'",
-                                                       actionButton("Moyenne", "Températures moyennes (°C)"),
-                                                       actionButton("Maximum", HTML("Moyenne des températures maximales <br> quotidiennes (°C)")),
-                                                       actionButton("Minimum",HTML("Moyenne des températures minimales <br> quotidiennes (°C)"))),
-                                      conditionalPanel(condition = "input.Variable == 'Précipitations totales et sous forme de neige'",
-                                                       actionButton("PrecTotale", "Précipitations totales (mm)"),
-                                                       actionButton("Neige", "Précipitations sous forme de neige (cm)")),
-                                      br(),
                                       
                                       
                                       ###Saisonnalité
