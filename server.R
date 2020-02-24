@@ -112,9 +112,9 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
       values <- c(200, 4200)
       print("title")} 
     else if(vari == "dlyfrzthw"){
-      pal <- colorNumeric("Spectral", domain = c(45, 105))
+      pal <- colorNumeric("Spectral", domain = c(40, 105))
       title <- sprintf("Évènements gel-dégel -%s", all_selec)
-      values <- c(45, 105)
+      values <- c(40, 105)
       print("title")} 
     fillColor <- pal(dataTG[[all_selec]])
     print ("fillcolor--------------------")
@@ -202,28 +202,31 @@ function(input, output, session) {
     percentile <- "50"
     
     ### CHANGING VARIABLE
-     if (input$PrecTotale) {
-       vari <- "prcptot"
-       print ("button precip")}
-     if (input$Moyenne) {
-       vari <- "tg_mean"
-       print ("button tem avg")}
-     if (input$Maximum) {
-      vari <- "tx_mean"
-      print ("Button tmax")}
-     if (input$Minimum) {
-      vari <- "tn_mean"
-      print ("button t min")}
-     if (input$Neige) {
+    if (input$Variable == "Précipitations sous forme de neige") {
       vari <- "solidprcptot"
       print ("button neige")}
+    if (input$Variable == "Précipitations totales") {
+      vari <- "prcptot"
+      print ("button precip")}
+    if (input$Variable == "Températures moyennes") {
+       vari <- "tg_mean"
+       print ("button tem avg")}
+    if (input$Variable == "Températures maximales") {
+      vari <- "tx_mean"
+      print ("Button tmax")}
+     if (input$Variable == "Températures minimales") {
+      vari <- "tn_mean"
+      print ("button t min")}
      if (input$Variable == "Degrés-jours de croissance"){
       vari <- "DJC"
       print ("button djc")}
-      if (input$Variable == "Évènements gel-dégel"){
+     if (input$Variable == "Évènements gel-dégel"){
         vari <- "dlyfrzthw"
         print ("button GelDegel")}
-    
+      if (input$Variable == "Saison de croissance"){
+      vari <- "growing_season_length"
+      print ("button GelDegel")}
+
     #### CHANGING TIME PERIOD AND PERCENTILE
     if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
     horizon <- input$Horizon
