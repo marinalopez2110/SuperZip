@@ -116,6 +116,11 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
       title <- sprintf("Évènements gel-dégel -%s", all_selec)
       values <- c(40, 105)
       print("title")} 
+    else if(vari == "growing_season_length"){
+      pal <- colorNumeric("Spectral", domain = c(115, 215))
+      title <- sprintf("Saison de croissance -%s", all_selec)
+      values <- c(115, 215)
+      print("title")} 
     fillColor <- pal(dataTG[[all_selec]])
     print ("fillcolor--------------------")
   
@@ -225,7 +230,7 @@ function(input, output, session) {
         print ("button GelDegel")}
       if (input$Variable == "Saison de croissance"){
       vari <- "growing_season_length"
-      print ("button GelDegel")}
+      print ("button Saisson de croissance")}
 
     #### CHANGING TIME PERIOD AND PERCENTILE
     if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
