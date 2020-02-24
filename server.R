@@ -12,20 +12,12 @@ library(xtable)
 library(dygraphs)
 library(stringr)
 
-###### LOAD GEOJSON FILE
+###### LOAD TABLE
 df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
-load_json <- function (region, vari, saisson){
-  #SUBSTITUTE ACCENTS
-  print ("load json")
-  nameA <- str_replace_all(region, c( "é"= "e", "à"="a", "è"= "e", "ô" = "o", "ç"="c", "É"="E", "È"="E", "Î"="i", "Ç"="C"))
-  print (nameA)
-  fname <- paste("www/",nameA,"_", vari, "_",saisson, ".json",sep="")
-  print(fname)
-  geojsonio::geojson_read(fname, what = "sp")
-}
 
-####### CONDITIONS FOR OPTIONS
+
+####### CONDITIONS FOR OPTIONS IN MAPS
 conditions <- function(horizon, scenario, percentile){
   if (horizon == 'Historique'){
     all_selec <- "hist_p50"
@@ -61,7 +53,25 @@ conditions <- function(horizon, scenario, percentile){
           all_selec <- "t2080_rcp85_p90"}}}
   return(all_selec)}
 
+##### INTERMIDIATE STEP *** CHECK IF STILL NEED IT
+mapTG <- function(region, namer, vari, period, saisson, scenario, percentile, all_selec){ 
+  print (region)
+  dataTG <- load_json(region, vari, saisson)
+  print ("dataTG" )
+  vari <- vari
+  addmapr(dataTG, vari, region, namer, period, scenario, percentile, all_selec) 
+}
 
+###### LOAD GEOJSON FILE
+load_json <- function (region, vari, saisson){
+  #SUBSTITUTE ACCENTS
+  print ("load json")
+  nameA <- str_replace_all(region, c( "é"= "e", "à"="a", "è"= "e", "ô" = "o", "ç"="c", "É"="E", "È"="E", "Î"="i", "Ç"="C"))
+  print (nameA)
+  fname <- paste("www/",nameA,"_", vari, "_",saisson, ".json",sep="")
+  print(fname)
+  geojsonio::geojson_read(fname, what = "sp")
+}
 
 #### MODIFY MAP BASED ON SELECTION - LEAFLETPROXY
 addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, all_selec){ 
@@ -73,33 +83,41 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     print ("values")
     if(vari == "tg_mean"){
     pal <- colorNumeric("Spectral", domain = c(-25, 28))
-    title <- sprintf("Température (°C) -%s", all_selec)
+    title <- sprintf("Température Moy (°C) -%s", all_selec)
     values <- c(-25, 28)
     print("title")}
     else if(vari == "tn_mean"){
       pal <- colorNumeric("Spectral", domain = c(-28, 23))
-      title <- sprintf("Température (°C) -%s", all_selec)
+      title <- sprintf("Température Min (°C) -%s", all_selec)
       values <- c(-28, 23)
       print("title")}
     else if(vari == "tx_mean"){
       pal <- colorNumeric("Spectral", domain = c(-28, 34))
-      title <- sprintf("Température (°C) -%s", all_selec)
+      title <- sprintf("Température Max (°C) -%s", all_selec)
       values <- c(-28, 34)
       print("title")}
     else if(vari == "prcptot"){
-    pal <- colorNumeric("Spectral", domain = c(800, 1500))
-    title <- sprintf("Précipitation totale (mm) -%s", all_selec)
-    values <- c(800, 1500)
-    print("title")} 
+      pal <- colorNumeric("Spectral", domain = c(50, 1500))
+      title <- sprintf("Précipitation totale (mm) -%s", all_selec)
+      values <- c(800, 1500)
+      print("title")} 
+    else if(vari == "solidprcptot"){
+      pal <- colorNumeric("Spectral", domain = c(0, 50))
+      title <- sprintf("Précipitation neige (cm) -%s", all_selec)
+      values <- c(0, 50)
+      print("title")} 
     else if(vari == "DJC"){
       pal <- colorNumeric("Spectral", domain = c(200, 4200))
       title <- sprintf("Degrés-jours de croissance (DJC) -%s", all_selec)
       values <- c(200, 4200)
       print("title")} 
-    
-    
+    else if(vari == "dlyfrzthw"){
+      pal <- colorNumeric("Spectral", domain = c(45, 105))
+      title <- sprintf("Évènements gel-dégel -%s", all_selec)
+      values <- c(45, 105)
+      print("title")} 
     fillColor <- pal(dataTG[[all_selec]])
-    print ("fillcolor")
+    print ("fillcolor--------------------")
   
   return(leafletProxy("map", data = dataTG) %>%
    clearControls() %>%
@@ -123,16 +141,6 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
                 position = "topleft")
  )
   #print("leafproxy")
-}
-
-##### INTERMIDIATE STEP *** CHECK IF STILL NEED IT
-
-mapTG <- function(region, namer, vari, period, saisson, scenario, percentile, all_selec){ 
-  print (region)
-  dataTG <- load_json(region, vari, saisson)
-  print ("dataTG" )
-  vari <- vari
-  addmapr(dataTG, vari, region, namer, period, scenario, percentile, all_selec) 
 }
 
 
@@ -196,19 +204,25 @@ function(input, output, session) {
     ### CHANGING VARIABLE
      if (input$PrecTotale) {
        vari <- "prcptot"
-       print (vari)}
+       print ("button precip")}
      if (input$Moyenne) {
        vari <- "tg_mean"
-       print (vari)}
-    if (input$Maximum) {
+       print ("button tem avg")}
+     if (input$Maximum) {
       vari <- "tx_mean"
-      print (vari)}
-    if (input$Minimum) {
+      print ("Button tmax")}
+     if (input$Minimum) {
       vari <- "tn_mean"
-      print (vari)}
-    if (input$Variable == "Degrés-jours de croissance"){
+      print ("button t min")}
+     if (input$Neige) {
+      vari <- "solidprcptot"
+      print ("button neige")}
+     if (input$Variable == "Degrés-jours de croissance"){
       vari <- "DJC"
-      print (vari)}
+      print ("button djc")}
+      if (input$Variable == "Évènements gel-dégel"){
+        vari <- "dlyfrzthw"
+        print ("button GelDegel")}
     
     #### CHANGING TIME PERIOD AND PERCENTILE
     if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
