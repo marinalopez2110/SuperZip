@@ -18,39 +18,16 @@ df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 
 
 ####### CONDITIONS FOR OPTIONS IN MAPS
-conditions <- function(horizon, scenario, percentile){
+conditions <- function(season2, horizon, scenario, percentile){
   if (horizon == 'Historique'){
-    all_selec <- "hist_p50"
-  } else  if (horizon == '2041-2070') {
-    if (scenario == "rcp45"){
-      if(percentile == "10"){
-        all_selec <- "t2050_rcp45_p10"
-      } else if(percentile == "50"){
-        all_selec <- "t2050_rcp45_p50"
-      } else if(percentile == "90"){
-        all_selec <- "t2050_rcp45_p90"}
-    } else if (scenario == "rcp85"){
-      if(percentile == "10"){
-        all_selec <- "t2050_rcp85_p10"
-      } else if(percentile == "50"){
-        all_selec <- "t2050_rcp85_p50"
-      } else if(percentile == "90"){
-        all_selec <- "t2050_rcp85_p90"}
-    } } else if (horizon == '2071-2100') {
-      if (scenario == "rcp45"){
-        if(percentile == "10"){
-          all_selec <- "t2080_rcp45_p10"
-        } else if(percentile == "50"){
-          all_selec <- "t2080_rcp45_p50"
-        } else if(percentile == "90"){
-          all_selec <- "t2080_rcp45_p90"}
-      } else if (scenario == "rcp85"){
-        if(percentile == "10"){
-          all_selec <- "t2080_rcp85_p10"
-        } else if(percentile == "50"){
-          all_selec <- "t2080_rcp85_p50"
-        } else if(percentile == "90"){
-          all_selec <- "t2080_rcp85_p90"}}}
+    all_selec <-  paste(season2,"hist_p50", sep="")} 
+  if (horizon == '2041-2070') {
+    horizon2 <- "t2050"
+    all_selec <- paste(season2, horizon2,"_",scenario,"_p", percentile, sep="")}
+  if (horizon == '2071-2100'){
+    horizon2 <- "t2080"
+    all_selec <- paste(season2, horizon2,"_",scenario,"_p", percentile, sep="")}  
+  print (all_selec)
   return(all_selec)}
 
 ##### INTERMIDIATE STEP *** CHECK IF STILL NEED IT
@@ -78,6 +55,7 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     print (region)
     print (namer)
     print("all_selec")
+    #print(dataTG[[all_selec]])
     labels <- sprintf("Région: %s : %s", dataTG[[namer]], dataTG[[all_selec]]) 
     print ("labels")
     print ("values")
@@ -134,12 +112,12 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     opacity = 1,
     color = "black",
     dashArray = "3",
-    fillOpacity = 0.8,
-    label = labels,
-    labelOptions = labelOptions(
-      style = list("font-weight" = "normal", padding = "3px 8px"),
-      textsize = "15px",
-      direction = "auto")
+    fillOpacity = 0.8
+    # label = labels,
+    # labelOptions = labelOptions(
+    #   style = list("font-weight" = "normal", padding = "3px 8px"),
+    #   textsize = "15px",
+    #   direction = "auto")
         )%>%
       # #leaflet("map")%>% #debugging
       addLegend(pal = pal, values = values ,  title = title, opacity = 0.7,
@@ -202,7 +180,6 @@ function(input, output, session) {
     #Default values
     vari <- "tg_mean"
     period <- "hist"
-    saison <- "annual"
     scenario <- "rcp45"
     percentile <- "50"
     
@@ -232,12 +209,21 @@ function(input, output, session) {
       vari <- "growing_season_length"
       print ("button Saison de croissance")}
 
-    #### CHANGING TIME PERIOD AND PERCENTILE
+    #### CHANGING SEASON, TIME PERIOD AND PERCENTILE
     if (input$Horizon == 'Historique' || input$Horizon == '2041-2070' || input$Horizon =='2071-2100'){
     horizon <- input$Horizon
     scenario <- input$Scenario
     percentile <- input$Percentile
-    all_selec <- conditions(horizon, scenario, percentile)}
+    if (input$Saisonnalite == "Annuel" ){
+      saison <- "annual"
+      season2 <- ""}
+    if (input$Saisonnalite == "Saisonier" ){
+      saison <- "seasonal"
+      season2 <- paste(input$season, "_", sep="")}
+    if (input$Saisonnalite == "Mensuel" ){
+      saison <- "monthly"
+      season2 <- paste(input$Mois, "_", sep="")}
+    all_selec <- conditions(season2, horizon, scenario, percentile)}
     mapTG(region, namer, vari, period, saison, scenario, percentile, all_selec)
   })
   
