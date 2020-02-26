@@ -5,7 +5,7 @@ library(dygraphs)
 
 navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
            
-           tabPanel("Carte Interactive",
+           tabPanel(div(icon("map"), "Carte Interactive"),
                     div(class="outer",
                         
                         tags$head(
@@ -446,8 +446,7 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       conditionalPanel(condition = "input.Saisonnalite == 'Mensuel'",
                                                        selectInput("Mois", "Séléctionez le mois:",
                                                                    choices=c("Janvier", "Février", "Mars", "Avril","Mai","Juin",
-                                                                             "Julliet","Aout","Septembre","Octobre","Novembre","Decembre"))
-                                      ),
+                                                                             "Julliet","Aout","Septembre","Octobre","Novembre","Decembre"))),
                                 
                                 ###Horizon de temps
                                 radioButtons("Horizon", "Séléctionez l'horizon de temps:",
@@ -469,9 +468,7 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                         
                         tags$div(id="cite",
                                  'Données compilées par ', tags$em('Ouranos - Ministère des Forêts, de la Faune et des Parcs')
-                        )
-                    )
-           ),
+                        ))),
            
            tabPanel((div(icon("table"),"Sommaire")),
                     br(),
@@ -479,16 +476,33 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                       column(12,
                              tableOutput("tabletest"),
                              div(icon("download"), tags$a(href="Moyenne2.csv", "Télécharger CSV"))
-                      )
-                    )
-    
-                    ),
+                      ),
+                      p("Le tableau représente les changements projetés selon deux scénarios d’émissions de gaz à effet de serre, le scénario modéré (RCP 4.5), qui suppose une stabilisation des émissions d’ici la fin du siècle et le scénario élevé (RCP 8.5), qui suppose une augmentation des émissions jusqu’à la fin du siècle."),
+                      p("Les saisons représentent des périodes de trois mois : l’hiver (décembre-janvier-février), le printemps (mars-avril-mai), l’été (juin-juillet-août) et l’automne (septembre-octobre-novembre)."),
+                      p("Les valeurs représentent des moyennes pour la région sélectionnée, calculées à partir d’un ensemble de simulations climatiques globales de l'ensemble CMIP5 pour la période de référence 1981-2010, la période 2041-2070 (l’horizon 2050) et la période 2071-2100 (l’horizon 2080). L’intervalle dans le tableau indique les 10e et 90e percentiles des 11 simulations climatiques utilisées. Ainsi, les 10e et 90e percentiles représentent la sensibilité des différents modèles climatiques aux émissions de gaz à effet de serre utilisés comme forçage ainsi qu’à la variabilité naturelle du climat."))),
            
            tabPanel(div(icon("image"), "Graphique"),
                     br(),
                     dygraphOutput("dygraph"),
-                    div(icon("download"), tags$a(href="Moyenne.csv", "Télécharger CSV"))
-           ),
+                    div(icon("download"), tags$a(href="Moyenne.csv", "Télécharger CSV")),
+                    p("La figure représente les changements projetés dans le temps selon deux scénarios d’émissions de gaz à effet de serre : le scénario modéré (RCP 4.5), qui suppose une stabilisation des émissions d’ici la fin du siècle, ainsi que le scénario élevé (RCP 8.5), qui suppose une augmentation des émissions jusqu’à la fin du siècle. Les valeurs sont calculées à partir d’un ensemble de simulations climatiques globales produit à partir de l’ensemble CMIP5."),
+                    p("Le tracé vert représente les observations interpolées à partir de stations météorologiques pour la période 1951-2013;"),
+                    p("Le tracé bleu représente la tendance médiane de l’ensemble des simulations avec le scénario modéré d’émissions (RCP 4.5);"),
+                    p("Le tracé rouge représente la tendance médiane de l’ensemble des simulations avec le scénario élevé d’émissions (RCP 8.5);"),
+                    p("Les enveloppes grise, bleue et rouge représentent la plage des valeurs annuelles de l’ensemble, soit les données comprises entre le 10e et le 90e percentile des simulations utilisées pour la période historique (1951-2005) et future (2006-2100). Les projections futures sont présentées pour les émissions modérées (RCP 4.5) et élevées (RCP 8.5) par des enveloppes rouges et bleues, respectivement.")),
            
-           conditionalPanel("false", icon("crosshair"))
+           tabPanel(div(icon("info"), "Information"),
+                    br(),
+                    div(
+                    p(span("Températures moyennes (°C)", style = "color:blue;font-weight:bold")," - La moyenne des températures quotidiennes."),
+                    p(span("Moyenne des température maximales quotidiennes (°C)", style = "color:blue;font-weight:bold")," - La moyenne des températures maximales quotidiennes."),
+                    p(span("Moyenne des températures minimales quotidiennes (°C)", style = "color:blue;font-weight:bold")," - La moyenne des températures minimales quotidiennes."),
+                    p(span("Précipitations totales (mm)", style = "color:blue;font-weight:bold")," - Somme de la pluie totale et de l'équivalent en eau de la neige totale en millimètres (mm)."),
+                    p(span("Précipitation sous forme de neige (cm)", style = "color:blue;font-weight:bold")," - Estimées sous forme de précipitations lorsque la température moyenne quotidienne <0 ° C"),
+                    p(span("Événements de gel-dégel (jours)", style = "color:blue;font-weight:bold")," - Un événement quotidien de gel-dégel survient quand, dans une période de 24 heures, la température minimale est inférieure à 0˚C et la température maximale est supérieure à 0˚C."),
+                    p(span("Degrés-jours de croissance (DJC)", style = "color:blue;font-weight:bold")," - Un degré-jour est l’écart, en degrés Celsius, qui sépare la température moyenne quotidienne d’une valeur de base de 4˚C. Si la valeur est égale ou inférieure à 4˚C, la journée à zéro degré-jour de croissance."),
+                    p("Les résultats pour la période de références et les horizons futurs sont calculés à partir d'une série de 11 simulations climatiques produites à partir de l'ensemble CMIP5. Les résultats pour la période de référence 1981-2010 sont affichés dans le panneau de gauche, tandis que diverses commandes permettent l'affichage des résultats futurs dans le panneau de droite."),
+                    p("Bouton émissions : permet d'afficher les changements projetés sous les deux scénarios d'émissions de gaz à effet de serre, le scénario modéré (RCP 4.5), qui suppose une stabilisation des émissions d'ici la fin du siècle et le scénario élevé (RCP 8.5), qui suppose une augmentation des émissions jusqu’à la fin du siècle."),
+                    p("Bouton horizon : permet d’afficher les résultats futurs de l'horizon 2041-2070 ou l’horizon 2071-2100."),
+                    p("Bouton percentile : permet d'explorer la gamme des résultats des 11 simulations climatiques individuelles pour un scénario d'émissions donné à l'aide des options 50, 10 ou 90 qui correspondent aux percentiles de l’ensemble. Cette gamme permet d'étudier la sensibilité des différents modèles climatiques aux mêmes émissions de gaz à effet de serre, ainsi que de la variabilité naturelle du climat.")))
 )
