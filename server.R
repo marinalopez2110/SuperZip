@@ -31,23 +31,27 @@ conditions <- function(season2, horizon, scenario, percentile){
   return(all_selec)}
 
 ##### INTERMIDIATE STEP *** CHECK IF STILL NEED IT
-mapTG <- function(region, namer, vari, period, saison, scenario, percentile, all_selec){ 
+mapTG <- function(region, namer, vari, period, saison, scenario, percentile, all_selec, fname2){ 
   print (region)
-  dataTG <- load_json(region, vari, saison) ### THIS STEP TAKES VERY LONG
+  dataTG <- load_json(fname2) ### THIS STEP TAKES VERY LONG
   print ("dataTG" )
   vari <- vari
   addmapr(dataTG, vari, region, namer, period, scenario, percentile, all_selec) 
 }
 
-###### LOAD GEOJSON FILE
-load_json <- function (region, vari, saison){
+####### Get the name of the file
+fname <- function (region, vari, saison){
   #SUBSTITUTE ACCENTS
-  print ("load json")
   nameA <- str_replace_all(region, c( "é"= "e", "à"="a", "è"= "e", "ô" = "o", "ç"="c", "É"="E", "È"="E", "Î"="i", "Ç"="C"))
   print (nameA)
-  fname <- paste("www/",nameA,"_", vari, "_",saison, ".json",sep="")
-  print(fname)
-  geojsonio::geojson_read(fname, what = "sp")
+  fname3 <- paste("www/",nameA,"_", vari, "_",saison, ".json",sep="")
+  print(fname3)}
+
+###### LOAD GEOJSON FILE
+load_json <- function (fname2){
+  print ("load json")
+  geojsonio::geojson_read(fname2, what = "sp")
+ # filename(nameA, vari, saison)
 }
 
 #### MODIFY MAP BASED ON SELECTION - LEAFLETPROXY
@@ -130,7 +134,7 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
 ##### SHINY FUNCTION
 function(input, output, session) {
   
-  ## Interactive Map ###########################################
+   ## Interactive Map ###########################################
   # Create the map
   output$map <- renderLeaflet({
     leaflet(map) %>%
@@ -224,10 +228,22 @@ function(input, output, session) {
       saison <- "monthly"
       season2 <- paste(input$Mois, "_", sep="")}
     all_selec <- conditions(season2, horizon, scenario, percentile)}
-    mapTG(region, namer, vari, period, saison, scenario, percentile, all_selec)
+    fname2 <- fname(region, vari, saison)
+    print("fname2")
+    print (fname2)
+    mapTG(region, namer, vari, period, saison, scenario, percentile, all_selec, fname2)
   })
   
-  
+ 
+  ####### DOWNLOAD BUTTON GEOJSON
+  output$downloadData <- downloadHandler(
+    filename <- function() { #
+      print ("download fname2")
+      paste(fname2, sep="")
+      print (fname2)
+      print ("Download",fname2)},
+    content <- function(file) {
+      file.copy(fname2, file)}  ) 
  
   #  observe({
   #    if (input$Sousregions == "deux"){
@@ -314,9 +330,7 @@ function(input, output, session) {
     clearShapes()
   })
   
-  
 
-  
 ##### FOR THE TABLE  
   output$tabletest <- renderTable({
     xtable(df,digits=2, type = "html", html.table.attributes="class='table-bordered'")
@@ -344,7 +358,10 @@ function(input, output, session) {
     rownames(dfts) <- dfts$time
         keep <- c( "time", "tg_mean_p10", "tg_mean_p50", "tg_mean_p90" )
     dfts2  <- dfts[ , keep]
-    dygraph(dfts2)
+    dygraph(dfts2, main = "Temperature Moyenne ")%>%
+      dySeries("tg_mean_p10", drawPoints = TRUE, pointShape = "square", color = "pink") %>%
+      dySeries("tg_mean_p50", stepPlot = TRUE, fillGraph = FALSE, color = "red") %>%
+      dySeries("tg_mean_p90", drawPoints = TRUE, pointShape = "square", color = "pink")
   })
 
 }
