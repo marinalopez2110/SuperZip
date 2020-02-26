@@ -33,7 +33,7 @@ conditions <- function(season2, horizon, scenario, percentile){
 ##### INTERMIDIATE STEP *** CHECK IF STILL NEED IT
 mapTG <- function(region, namer, vari, period, saison, scenario, percentile, all_selec){ 
   print (region)
-  dataTG <- load_json(region, vari, saison)
+  dataTG <- load_json(region, vari, saison) ### THIS STEP TAKES VERY LONG
   print ("dataTG" )
   vari <- vari
   addmapr(dataTG, vari, region, namer, period, scenario, percentile, all_selec) 
