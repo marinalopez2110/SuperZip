@@ -112,12 +112,12 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     opacity = 1,
     color = "black",
     dashArray = "3",
-    fillOpacity = 0.8
-    # label = labels,
-    # labelOptions = labelOptions(
-    #   style = list("font-weight" = "normal", padding = "3px 8px"),
-    #   textsize = "15px",
-    #   direction = "auto")
+    fillOpacity = 0.8,
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")
         )%>%
       # #leaflet("map")%>% #debugging
       addLegend(pal = pal, values = values ,  title = title, opacity = 0.7,
