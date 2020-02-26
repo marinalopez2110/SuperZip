@@ -437,7 +437,8 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       
                                       
                                       ###Saisonnalité
-                                      selectInput("Saisonnalite", "Séléctionez la saisonnalité:",
+                                conditionalPanel(condition = "input.Variable != 'Saison de croissance'",
+                                                 selectInput("Saisonnalite", "Séléctionez la saisonnalité:",
                                                   choices=c("Annuel", "Saisonier", "Mensuel" )),
                                       conditionalPanel(condition = "input.Saisonnalite == 'Saisonier'",
                                                        radioButtons("season", "Séléctionez la saison:",
@@ -446,7 +447,7 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       conditionalPanel(condition = "input.Saisonnalite == 'Mensuel'",
                                                        selectInput("Mois", "Séléctionez le mois:",
                                                                    choices=c("Janvier", "Février", "Mars", "Avril","Mai","Juin",
-                                                                             "Julliet","Aout","Septembre","Octobre","Novembre","Decembre"))),
+                                                                             "Julliet","Aout","Septembre","Octobre","Novembre","Decembre")))),
                                 
                                 ###Horizon de temps
                                 radioButtons("Horizon", "Séléctionez l'horizon de temps:",
@@ -462,7 +463,10 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       ###Percentile
                                 conditionalPanel(condition = "input.Horizon == '2041-2070' || input.Horizon == '2071-2100'",
                                 radioButtons("Percentile", "Séléctionez le percentile:",
-                                             c("10" = "10", "50" = "50", "90" = "90"), selected = "50", inline = TRUE))
+                                             c("10" = "10", "50" = "50", "90" = "90"), selected = "50", inline = TRUE)), 
+                                
+                                ###DOWNLOAD GEOJSON
+                                downloadButton("downloadData", "Download")
                                
                         ),
                         
@@ -499,8 +503,9 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                     p(span("Moyenne des températures minimales quotidiennes (°C)", style = "color:blue;font-weight:bold")," - La moyenne des températures minimales quotidiennes."),
                     p(span("Précipitations totales (mm)", style = "color:blue;font-weight:bold")," - Somme de la pluie totale et de l'équivalent en eau de la neige totale en millimètres (mm)."),
                     p(span("Précipitation sous forme de neige (cm)", style = "color:blue;font-weight:bold")," - Estimées sous forme de précipitations lorsque la température moyenne quotidienne <0 ° C"),
-                    p(span("Événements de gel-dégel (jours)", style = "color:blue;font-weight:bold")," - Un événement quotidien de gel-dégel survient quand, dans une période de 24 heures, la température minimale est inférieure à 0˚C et la température maximale est supérieure à 0˚C."),
                     p(span("Degrés-jours de croissance (DJC)", style = "color:blue;font-weight:bold")," - Un degré-jour est l’écart, en degrés Celsius, qui sépare la température moyenne quotidienne d’une valeur de base de 4˚C. Si la valeur est égale ou inférieure à 4˚C, la journée à zéro degré-jour de croissance."),
+                    p(span("Événements de gel-dégel (jours)", style = "color:blue;font-weight:bold")," - Un événement quotidien de gel-dégel survient quand, dans une période de 24 heures, la température minimale est inférieure à 0˚C et la température maximale est supérieure à 0˚C."),
+                    p(span("Saison de croissance", style = "color:blue;font-weight:bold")," - Nombre annuel de jours entre la première occurrence d'au moins six jours consécutifs avec une température quotidienne moyenne supérieure à 5,0 ° C et la première occurrence d'au moins 6 jours consécutifs avec une température quotidienne moyenne inférieure à 5,0 ° C après le 07-01."),
                     p("Les résultats pour la période de références et les horizons futurs sont calculés à partir d'une série de 11 simulations climatiques produites à partir de l'ensemble CMIP5. Les résultats pour la période de référence 1981-2010 sont affichés dans le panneau de gauche, tandis que diverses commandes permettent l'affichage des résultats futurs dans le panneau de droite."),
                     p("Bouton émissions : permet d'afficher les changements projetés sous les deux scénarios d'émissions de gaz à effet de serre, le scénario modéré (RCP 4.5), qui suppose une stabilisation des émissions d'ici la fin du siècle et le scénario élevé (RCP 8.5), qui suppose une augmentation des émissions jusqu’à la fin du siècle."),
                     p("Bouton horizon : permet d’afficher les résultats futurs de l'horizon 2041-2070 ou l’horizon 2071-2100."),
