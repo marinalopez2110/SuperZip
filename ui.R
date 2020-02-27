@@ -446,8 +446,9 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                                       "Été"= "summer","Automne"= "fall"), inline = TRUE)),
                                       conditionalPanel(condition = "input.Saisonnalite == 'Mensuel'",
                                                        selectInput("Mois", "Séléctionez le mois:",
-                                                                   choices=c("Janvier", "Février", "Mars", "Avril","Mai","Juin",
-                                                                             "Julliet","Aout","Septembre","Octobre","Novembre","Decembre")))),
+                                                                   choices=c("Janvier" = "january", "Février" = "february", "Mars" = "march", "Avril" = "april","Mai"= "may",
+                                                                             "Juin" = "june", "Julliet" ="july","Aout"="august","Septembre"="september","Octobre"="october",
+                                                                             "Novembre"="november","Decembre"="december")))),
                                 
                                 ###Horizon de temps
                                 radioButtons("Horizon", "Séléctionez l'horizon de temps:",
