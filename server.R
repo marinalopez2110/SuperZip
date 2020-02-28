@@ -95,14 +95,14 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     print ("labels")
     print ("values")
     if(vari == "tg_mean"){
-    pal <- colorNumeric("Spectral", domain = c(-25, 30))
+    pal <- colorNumeric("Spectral", domain = c(-26, 30))
     title <- sprintf("Température Moy (°C) -%s", all_selec)
     values <- c(-25, 30)
     print("title")}
     else if(vari == "tn_mean"){
-      pal <- colorNumeric("Spectral", domain = c(-28, 23))
+      pal <- colorNumeric("Spectral", domain = c(-30, 25))
       title <- sprintf("Température Min (°C) -%s", all_selec)
-      values <- c(-28, 23)
+      values <- c(-30, 25)
       print("title")}
     else if(vari == "tx_mean"){
       pal <- colorNumeric("Spectral", domain = c(-28, 34))
