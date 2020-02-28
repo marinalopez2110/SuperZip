@@ -17,7 +17,7 @@ df <- read.table("www/table2.csv", header = TRUE, sep = ";")
 # setwd("C:\\Users\\marlop1\\Documents\\GitHub\\SuperZip")
 
 
-####### CONDITIONS FOR OPTIONS IN MAPS
+####### CONDITIONS FOR HORIZON, SCENARIO, SEASON AND PERCENTILE IN MAPS
 conditions <- function(season2, horizon, scenario, percentile){
   if (horizon == 'Historique'){
     all_selec <-  paste(season2,"hist_p50", sep="")} 
@@ -95,9 +95,9 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
     print ("labels")
     print ("values")
     if(vari == "tg_mean"){
-    pal <- colorNumeric("Spectral", domain = c(-25, 28))
+    pal <- colorNumeric("Spectral", domain = c(-25, 30))
     title <- sprintf("Température Moy (°C) -%s", all_selec)
-    values <- c(-25, 28)
+    values <- c(-25, 30)
     print("title")}
     else if(vari == "tn_mean"){
       pal <- colorNumeric("Spectral", domain = c(-28, 23))
@@ -157,9 +157,7 @@ addmapr <- function(dataTG, vari, region, namer, period, scenario, percentile, a
       # #leaflet("map")%>% #debugging
       addLegend(pal = pal, values = values ,  title = title, opacity = 0.7,
                 position = "topleft")
- )
-  #print("leafproxy")
-}
+ )}
 
 
 ##### SHINY FUNCTION
@@ -184,6 +182,7 @@ function(input, output, session) {
     listsaison <- list(saisoni, seasoni2, all_seleci)
     return  (listsaison)}
   
+  ### Function to change region for one or all regions
   regionf <- function(echele2, sousregion2){
     if (echele2 == 'Domaines bioclimatiques'){
       namer <- "NOM"
@@ -222,6 +221,48 @@ function(input, output, session) {
     return(listrnr)
   } 
   
+  
+  ### Function to change region for two or three regions
+  regionf23 <- function(echele2, sousregion2){
+    if (echele2 == 'Domaines bioclimatiques' ){
+      namer <- "NOM"
+      if (sousregion2 == "Toutes") {region <- "DB"} 
+      else {region <- input$Domaines}
+    } else  if (echele2 == "Sous-domaines bioclimatiques"){
+      namer <- "NOM"
+      if (sousregion2 == "Toutes") {region <- "SDB"} 
+      else {region <- input$Sousdomaines}
+    } else  if (echele2 == "Régions écologiques"){
+      namer <- "NOM"
+      if (sousregion2 == "Toutes") {region <- "RE"} 
+      else {region <- input$RegEcol}
+    } else  if (echele2 ==  "Sous-région écologiques"){
+      namer <- "NOM"
+      if (sousregion2 == "Toutes") {region <- "SRE"} 
+      else {region <- input$SousRegEcol}
+    } else  if (echele2 == "Territoires guides"){
+      namer <- "TER_GUIDE"
+      if (sousregion2 == "Toutes") {region <- "TG"} 
+      else {region <- input$Territoires}
+    } else  if (echele2 == "Secteurs des opérations régionales"){
+      namer <- "D_GENERAL"
+      if (sousregion2 == "Toutes") {region <- "SOR"} 
+      else {region <- input$Secteurs}
+    } else  if (echele2 == "Régions forestières"){
+      namer <- "NM_REG_FOR"
+      if (sousregion2 == "Toutes") {region <- "RF"} 
+      else {region <- input$RegForest}
+    } else  if (echele2 == "Unités d’aménagement (UA)"){
+      namer <- "PER_NO_UA"
+      if (sousregion2 == "Toutes") {region <- "UA"} 
+      else {region <- input$UA}
+    }
+    listrnr <- list(region, namer)
+    return(listrnr)
+  } 
+  
+  
+  
    ## Interactive Map ###########################################
   # Create the map
   output$map <- renderLeaflet({
@@ -234,26 +275,28 @@ function(input, output, session) {
   })
   
   
-  ###### OBSERVE FOR FIRST REGION AND ALL REGION
+  ###### OBSERVE FOR FIRST REGION AND ALL REGIONS
   observe({
-  listr <- regionf(input$Echele, input$Sousregions) 
-   print("region")
-   region <- unlist(listr[1])
-   print (region)
-   namer <- unlist(listr[2])
+    ##Select region
+    listr <- regionf(input$Echele, input$Sousregions) 
+    print("region")
+    region <- unlist(listr[1])
+    print (region)
+    namer <- unlist(listr[2])
   
-    #Default values
-    #vari <- "tg_mean"
+    ##Default values
     period <- "hist"
     scenario <- "rcp45"
     percentile <- "50"
     
+    ##Select Variable and season
     vari <- varif(input$Variable)
     saisonlist <- saisonf(input$Horizon)
     saison <- unlist(saisonlist[1])
     season2 <- unlist(saisonlist[2])
     all_selec <- unlist(saisonlist[3])
 
+    ## Modify map
     fname2 <- fnamef(region, vari, saison)
     print("fname2")
     print (fname2)
