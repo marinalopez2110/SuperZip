@@ -39,11 +39,13 @@ navbarPage(div(img(src='MFFP.png', width="100px", align="left")), id="nav",
                                       
                                 ###Échele spatiale
                                       selectInput("Echele", "Séléctionez l'échele spatiale:",
-                                                  choices=c("Territoires guides", "Domaines bioclimatiques", "Sous-domaines bioclimatiques", "Régions écologiques", 
-                                                            "Sous-région écologiques",  "Secteurs des opérations régionales",
-                                                            "Régions forestières", "Unités d’aménagement (UA)")),
+                                                  choices=c("Territoires guides",   "Secteurs des opérations régionales")),
+                                # choices=c("Territoires guides", "Domaines bioclimatiques", "Sous-domaines bioclimatiques", "Régions écologiques", 
+                                #           "Sous-région écologiques",  
+                                #           "Régions forestières", "Unités d’aménagement (UA)")),
                                       radioButtons("Sousregions", "Nombre de sous-régions que vous souhaitez voir:",
-                                                   c("1" = "un",  "2" = "deux", "3" = "trois", "Toutes" =  "Toutes"), inline = TRUE),
+                                                   c("1" = "un")),
+                                                   #c("1" = "un",  "2" = "deux", "3" = "trois", "Toutes" =  "Toutes"), inline = TRUE),
                                       
                                       
                                   #### Une région     
