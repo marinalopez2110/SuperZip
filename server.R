@@ -433,7 +433,23 @@ function(input, output, session) {
   observeEvent( input$VariableT, { 
     print(variT())    })
   
+  #### Download for  Table
+  output$downloadDataT <- downloadHandler(
+    filename <- function() { #
+      nameATO <- str_replace_all(sousechelleT(), c( "é"= "e", "à"="a", "è"= "e", "ô" = "o", "ç"="c", "É"="E", "È"="E", "Î"="i", "Ç"="C"))
+      fnameTS <- paste("www/",nameATO,"_",variT(),"_","table.csv", sep='')
+      # print ("fname2")
+      print (fnameTS)
+    },
+    content <- function(file) {
+      nameATO <- str_replace_all(sousechelleT(), c( "é"= "e", "à"="a", "è"= "e", "ô" = "o", "ç"="c", "É"="E", "È"="E", "Î"="i", "Ç"="C"))
+      fnameTS <- paste("www/",nameATO,"_",variT(),"_","table.csv", sep='')
+      print ("fnameTS")
+      print (fnameTS)
+      file.copy(fnameTS, file)}  ) 
 
+  
+  
   
   ### Output function
   output$tabletest <- renderTable(
